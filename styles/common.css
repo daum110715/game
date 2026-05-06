@@ -1,0 +1,1070 @@
+:root {
+  /* 颜色 */
+  --bg-base: #f5f5f7;
+  --bg-glass: rgba(255, 255, 255, 0.6);
+  --bg-glass-hover: rgba(255, 255, 255, 0.85);
+  --bg-tag: rgba(0, 0, 0, 0.04);
+  --bg-select-option: #ffffff;
+  --bg-gradient: linear-gradient(180deg, #f9f9fb 0%, #ececef 100%);
+  --line: rgba(0, 0, 0, 0.08);
+  --line-soft: rgba(0, 0, 0, 0.04);
+  --line-hover: rgba(0, 0, 0, 0.14);
+  --ink: #1a1a1a;
+  --ink-soft: #4a4a4a;
+  --muted: #86868b;
+  --accent: #5b6d8a;
+  --good: #5a8a6a;
+  --danger: #c5384a;
+
+  /* 形状 */
+  --radius: 10px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 14px;
+  --radius-xl: 18px;
+
+  /* 效果 */
+  --shadow-button: inset 0 1px 0 rgba(255, 255, 255, 0.6),
+    0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-button-hover: inset 0 1px 0 rgba(255, 255, 255, 0.6),
+    0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-card: inset 0 1px 0 rgba(255, 255, 255, 0.7),
+    0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-card-hover: inset 0 1px 0 rgba(255, 255, 255, 0.8),
+    0 8px 24px rgba(0, 0, 0, 0.08), 0 2px 6px rgba(0, 0, 0, 0.04);
+  --shadow-game-card: inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    0 4px 12px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.06);
+  --shadow-game-card-hover: inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    0 8px 18px rgba(0, 0, 0, 0.1), 0 2px 5px rgba(0, 0, 0, 0.06);
+  --shadow-game-card-back: inset 0 1px 0 rgba(255, 255, 255, 0.45),
+    0 4px 12px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.06);
+  --shadow-game-card-drag: inset 0 1px 0 rgba(255, 255, 255, 0.95),
+    0 16px 36px rgba(0, 0, 0, 0.18), 0 4px 10px rgba(0, 0, 0, 0.1);
+  --shadow-overlay: inset 0 1px 0 rgba(255, 255, 255, 0.95),
+    0 24px 56px rgba(0, 0, 0, 0.12), 0 4px 12px rgba(0, 0, 0, 0.06);
+  --shadow-toast: 0 8px 24px rgba(0, 0, 0, 0.15);
+  --shadow-highlight: rgba(255, 255, 255, 0.6);
+  --shadow-highlight-hover: rgba(255, 255, 255, 0.8);
+  --backdrop: blur(14px) saturate(160%);
+  --backdrop-card: blur(20px) saturate(160%);
+  --backdrop-overlay: blur(20px) saturate(160%);
+  --border-width: 1px;
+  --border-style: solid;
+
+  --font: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI",
+    "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+
+  /* 游戏页面通用变量 */
+  --bg-slot: rgba(255, 255, 255, 0.4);
+  --bg-card-face: rgba(255, 255, 255, 0.72);
+  --bg-card-back: rgba(70, 75, 90, 0.28);
+  --border-card: rgba(0, 0, 0, 0.06);
+  --border-card-back: rgba(255, 255, 255, 0.45);
+  --color-slot: rgba(0, 0, 0, 0.18);
+  --bg-overlay: rgba(245, 245, 247, 0.55);
+  --border-overlay: rgba(255, 255, 255, 0.85);
+  --bg-toast: rgba(26, 26, 26, 0.85);
+  --ink-toast: rgba(255, 255, 255, 0.95);
+  --scroll-shadow: rgba(0, 0, 0, 0.08);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--bg-base);
+  background-image: var(--bg-gradient);
+  background-attachment: fixed;
+  color: var(--ink);
+  font-family: var(--font);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  -webkit-appearance: none;
+  appearance: none;
+  font-family: inherit;
+  font-size: 13px;
+  color: var(--ink);
+  background: var(--bg-glass);
+  backdrop-filter: var(--backdrop);
+  -webkit-backdrop-filter: var(--backdrop);
+  border: var(--border-width) var(--border-style) var(--line);
+  padding: 7px 18px;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease,
+    transform 0.05s ease, box-shadow 0.15s ease;
+  letter-spacing: 0.3px;
+  box-shadow: var(--shadow-button);
+}
+button:hover {
+  background: var(--bg-glass-hover);
+  border-color: var(--line-hover);
+  box-shadow: var(--shadow-button-hover);
+}
+button:active {
+  transform: translateY(1px);
+}
+
+button:focus-visible,
+select:focus-visible,
+a:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+button[disabled] {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+button[disabled]:hover {
+  background: var(--bg-glass);
+  border-color: var(--line-soft);
+  box-shadow: var(--shadow-button);
+}
+
+select {
+  -webkit-appearance: none;
+  appearance: none;
+  font-family: inherit;
+  font-size: 13px;
+  color: var(--ink);
+  background-color: var(--bg-glass);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' fill='none'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%2386868b' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-position: right 10px center;
+  background-size: 10px 6px;
+  background-repeat: no-repeat;
+  backdrop-filter: var(--backdrop);
+  -webkit-backdrop-filter: var(--backdrop);
+  border: var(--border-width) var(--border-style) var(--line);
+  padding: 6px 30px 6px 12px;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: border-color 0.15s ease;
+  box-shadow: var(--shadow-button);
+}
+select:hover {
+  border-color: var(--line-hover);
+}
+select option {
+  background: var(--bg-select-option);
+  color: var(--ink);
+}
+
+/* 头部 */
+.site-header {
+  padding: 72px 56px 36px;
+  border-bottom: 1px solid var(--line);
+}
+.header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.site-title {
+  font-size: 36px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  color: var(--ink);
+}
+.site-subtitle {
+  color: var(--muted);
+  font-size: 14px;
+  margin-top: 12px;
+  letter-spacing: 0.5px;
+}
+
+/* 主题切换器 */
+.theme-switcher select {
+  font-size: 12px;
+  padding: 5px 10px;
+  min-height: 30px;
+}
+
+/* 自定义下拉 */
+.custom-dropdown {
+  position: relative;
+}
+
+.custom-dropdown-trigger {
+  font-size: 12px;
+  padding: 5px 28px 5px 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+  min-height: 30px;
+}
+
+.custom-dropdown-trigger::after {
+  content: "";
+  width: 0;
+  height: 0;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 5px solid var(--muted);
+  transition: transform 0.15s ease;
+}
+
+.custom-dropdown-trigger.is-open::after {
+  transform: rotate(180deg);
+}
+
+.custom-dropdown-list {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  min-width: 100%;
+  max-height: 240px;
+  overflow: auto;
+  background: var(--bg-glass-hover);
+  backdrop-filter: var(--backdrop-card);
+  -webkit-backdrop-filter: var(--backdrop-card);
+  border: var(--border-width) var(--border-style) var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-overlay);
+  z-index: 200;
+  padding: 4px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--line-hover) transparent;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-4px);
+  transition: opacity 0.18s ease, visibility 0.18s ease, transform 0.18s ease;
+}
+
+.custom-dropdown-list.is-open {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.custom-dropdown-list::-webkit-scrollbar {
+  width: 4px;
+}
+
+.custom-dropdown-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-dropdown-list::-webkit-scrollbar-thumb {
+  background: var(--line-hover);
+  border-radius: 999px;
+}
+
+.custom-dropdown-item {
+  padding: 6px 10px;
+  font-size: 12px;
+  color: var(--ink);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.1s ease;
+}
+
+.custom-dropdown-item:hover {
+  background: var(--bg-tag);
+}
+
+.custom-dropdown-item.is-active {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+/* 游戏卡片网格 */
+.game-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 22px;
+  padding: 40px 56px 80px;
+}
+
+.game-card {
+  display: block;
+  background: var(--bg-glass);
+  backdrop-filter: var(--backdrop-card);
+  -webkit-backdrop-filter: var(--backdrop-card);
+  border: var(--border-width) var(--border-style) var(--line);
+  border-radius: var(--radius-lg);
+  padding: 26px 28px 24px;
+  cursor: pointer;
+  transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease,
+    box-shadow 0.2s ease;
+  position: relative;
+  box-shadow: var(--shadow-card);
+}
+.game-card:hover {
+  transform: translateY(-3px);
+  background: var(--bg-glass-hover);
+  border-color: var(--line-hover);
+  box-shadow: var(--shadow-card-hover);
+}
+.game-card:active {
+  transform: translateY(-1px);
+}
+
+.game-card .name {
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  color: var(--ink);
+}
+.game-card .desc {
+  margin-top: 12px;
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.65;
+}
+.game-card .tag {
+  display: inline-block;
+  margin-top: 14px;
+  padding: 3px 10px;
+  font-size: 11px;
+  background: var(--bg-tag);
+  border: var(--border-width) var(--border-style) var(--line);
+  color: var(--ink-soft);
+  border-radius: var(--radius-sm);
+  letter-spacing: 0.5px;
+}
+
+/* --- Dashboard stats on homepage --- */
+
+.dash-stats {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px dashed var(--line);
+}
+
+.dash-line {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.dash-line span {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.dash-recent {
+  margin-top: 4px;
+  font-size: 12px;
+  color: var(--muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ========== 主题定义 ========== */
+
+/* 1. glass（默认） */
+
+/* 2. 暗夜黑晶 */
+html[data-theme="dark"] {
+  --bg-base: #0f0f12;
+  --bg-glass: rgba(35, 35, 40, 0.6);
+  --bg-glass-hover: rgba(50, 50, 58, 0.85);
+  --bg-tag: rgba(255, 255, 255, 0.06);
+  --bg-select-option: #25252b;
+  --bg-gradient: linear-gradient(180deg, #16161a 0%, #0f0f12 100%);
+  --line: rgba(255, 255, 255, 0.08);
+  --line-soft: rgba(255, 255, 255, 0.04);
+  --line-hover: rgba(255, 255, 255, 0.14);
+  --ink: #e8e8ed;
+  --ink-soft: #a1a1a6;
+  --muted: #6e6e73;
+  --accent: #5fa8d3;
+  --good: #5da876;
+  --danger: #e85d6e;
+  --shadow-button: inset 0 1px 0 rgba(255, 255, 255, 0.05),
+    0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-button-hover: inset 0 1px 0 rgba(255, 255, 255, 0.05),
+    0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-card: inset 0 1px 0 rgba(255, 255, 255, 0.05),
+    0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-card-hover: inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 8px 24px rgba(0, 0, 0, 0.35), 0 2px 6px rgba(0, 0, 0, 0.2);
+  --shadow-game-card: inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 4px 12px rgba(0, 0, 0, 0.25), 0 1px 3px rgba(0, 0, 0, 0.2);
+  --shadow-game-card-hover: inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 8px 18px rgba(0, 0, 0, 0.3), 0 2px 5px rgba(0, 0, 0, 0.2);
+  --shadow-game-card-back: inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    0 4px 12px rgba(0, 0, 0, 0.25), 0 1px 3px rgba(0, 0, 0, 0.2);
+  --shadow-game-card-drag: inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    0 16px 36px rgba(0, 0, 0, 0.35), 0 4px 10px rgba(0, 0, 0, 0.25);
+  --shadow-overlay: inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 24px 56px rgba(0, 0, 0, 0.45), 0 4px 12px rgba(0, 0, 0, 0.25);
+  --shadow-toast: 0 8px 24px rgba(0, 0, 0, 0.35);
+  --shadow-highlight: rgba(255, 255, 255, 0.05);
+  --shadow-highlight-hover: rgba(255, 255, 255, 0.08);
+  --bg-slot: rgba(255, 255, 255, 0.12);
+  --bg-card-face: rgba(240, 240, 245, 0.92);
+  --bg-card-back: rgba(120, 125, 140, 0.35);
+  --border-card: rgba(0, 0, 0, 0.12);
+  --border-card-back: rgba(255, 255, 255, 0.25);
+  --color-slot: rgba(255, 255, 255, 0.25);
+  --bg-overlay: rgba(15, 15, 18, 0.75);
+  --border-overlay: rgba(255, 255, 255, 0.08);
+  --bg-toast: rgba(20, 20, 25, 0.9);
+  --ink-toast: rgba(255, 255, 255, 0.95);
+  --scroll-shadow: rgba(0, 0, 0, 0.2);
+}
+
+/* 3. 扁平多彩 */
+html[data-theme="flat"] {
+  --bg-base: #f0f2f5;
+  --bg-glass: #ffffff;
+  --bg-glass-hover: #f5f5f5;
+  --bg-tag: #eef1f5;
+  --bg-select-option: #ffffff;
+  --bg-gradient: none;
+  --line: #e1e4e8;
+  --line-soft: #f0f2f5;
+  --line-hover: #d1d5da;
+  --ink: #24292f;
+  --ink-soft: #57606a;
+  --muted: #8c959f;
+  --accent: #0969da;
+  --good: #1a7f37;
+  --danger: #cf222e;
+  --radius: 0px;
+  --radius-sm: 0px;
+  --radius-md: 0px;
+  --radius-lg: 0px;
+  --radius-xl: 0px;
+  --shadow-button: none;
+  --shadow-button-hover: none;
+  --shadow-card: none;
+  --shadow-card-hover: none;
+  --shadow-game-card: none;
+  --shadow-game-card-hover: none;
+  --shadow-game-card-back: none;
+  --shadow-game-card-drag: none;
+  --shadow-overlay: none;
+  --shadow-toast: none;
+  --shadow-highlight: transparent;
+  --shadow-highlight-hover: transparent;
+  --backdrop: none;
+  --backdrop-card: none;
+  --backdrop-overlay: none;
+  --bg-slot: #eef1f5;
+  --bg-card-face: #ffffff;
+  --bg-card-back: #57606a;
+  --border-card: #d1d5da;
+  --border-card-back: #8c959f;
+  --color-slot: #8c959f;
+  --bg-overlay: rgba(240, 242, 245, 0.95);
+  --border-overlay: #d1d5da;
+  --bg-toast: #24292f;
+  --ink-toast: #ffffff;
+  --scroll-shadow: rgba(0, 0, 0, 0.06);
+}
+
+/* 4. 新拟态 */
+html[data-theme="neumorphism"] {
+  --bg-base: #e0e5ec;
+  --bg-glass: #e0e5ec;
+  --bg-glass-hover: #e0e5ec;
+  --bg-tag: #d1d9e6;
+  --bg-select-option: #e0e5ec;
+  --bg-gradient: none;
+  --line: transparent;
+  --line-soft: transparent;
+  --line-hover: transparent;
+  --ink: #4a5568;
+  --ink-soft: #718096;
+  --muted: #a0aec0;
+  --accent: #667eea;
+  --good: #48bb78;
+  --danger: #f56565;
+  --radius: 12px;
+  --radius-sm: 8px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --shadow-button: 6px 6px 10px rgba(163, 177, 198, 0.6),
+    -6px -6px 10px rgba(255, 255, 255, 0.5);
+  --shadow-button-hover: inset 4px 4px 8px rgba(163, 177, 198, 0.6),
+    inset -4px -4px 8px rgba(255, 255, 255, 0.5);
+  --shadow-card: 8px 8px 16px rgba(163, 177, 198, 0.6),
+    -8px -8px 16px rgba(255, 255, 255, 0.5);
+  --shadow-card-hover: inset 4px 4px 8px rgba(163, 177, 198, 0.6),
+    inset -4px -4px 8px rgba(255, 255, 255, 0.5);
+  --shadow-game-card: 6px 6px 12px rgba(163, 177, 198, 0.5),
+    -6px -6px 12px rgba(255, 255, 255, 0.4);
+  --shadow-game-card-hover: 8px 8px 16px rgba(163, 177, 198, 0.5),
+    -8px -8px 16px rgba(255, 255, 255, 0.4);
+  --shadow-game-card-back: inset 3px 3px 6px rgba(163, 177, 198, 0.4),
+    inset -3px -3px 6px rgba(255, 255, 255, 0.3);
+  --shadow-game-card-drag: 10px 10px 20px rgba(163, 177, 198, 0.6),
+    -10px -10px 20px rgba(255, 255, 255, 0.5);
+  --shadow-overlay: 12px 12px 24px rgba(163, 177, 198, 0.6),
+    -12px -12px 24px rgba(255, 255, 255, 0.5);
+  --shadow-toast: 6px 6px 12px rgba(163, 177, 198, 0.5),
+    -6px -6px 12px rgba(255, 255, 255, 0.4);
+  --shadow-highlight: transparent;
+  --shadow-highlight-hover: transparent;
+  --backdrop: none;
+  --backdrop-card: none;
+  --backdrop-overlay: none;
+  --border-width: 0px;
+  --bg-slot: #e0e5ec;
+  --bg-card-face: #e0e5ec;
+  --bg-card-back: #c5cdd8;
+  --border-card: transparent;
+  --border-card-back: transparent;
+  --color-slot: #a0aec0;
+  --bg-overlay: rgba(224, 229, 236, 0.85);
+  --border-overlay: transparent;
+  --bg-toast: #4a5568;
+  --ink-toast: #ffffff;
+  --scroll-shadow: rgba(163, 177, 198, 0.25);
+}
+
+/* 5. 赛博朋克 */
+html[data-theme="cyberpunk"] {
+  --bg-base: #0a0a0f;
+  --bg-glass: rgba(10, 10, 15, 0.85);
+  --bg-glass-hover: rgba(20, 20, 35, 0.95);
+  --bg-tag: rgba(0, 255, 255, 0.1);
+  --bg-select-option: #0a0a0f;
+  --bg-gradient: linear-gradient(180deg, #0f0f1a 0%, #0a0a0f 100%);
+  --line: #00ffff;
+  --line-soft: rgba(0, 255, 255, 0.15);
+  --line-hover: #00ffff;
+  --ink: #e0e0e0;
+  --ink-soft: #a0a0a0;
+  --muted: #606060;
+  --accent: #ff00ff;
+  --good: #00ff41;
+  --danger: #ff003c;
+  --radius: 2px;
+  --radius-sm: 0px;
+  --radius-md: 2px;
+  --radius-lg: 4px;
+  --radius-xl: 4px;
+  --shadow-button: 0 0 8px rgba(0, 255, 255, 0.4),
+    inset 0 0 4px rgba(0, 255, 255, 0.2);
+  --shadow-button-hover: 0 0 12px rgba(0, 255, 255, 0.6),
+    inset 0 0 6px rgba(0, 255, 255, 0.3);
+  --shadow-card: 0 0 12px rgba(0, 255, 255, 0.3),
+    inset 0 0 6px rgba(0, 255, 255, 0.1);
+  --shadow-card-hover: 0 0 20px rgba(0, 255, 255, 0.6),
+    inset 0 0 10px rgba(0, 255, 255, 0.2);
+  --shadow-game-card: 0 0 8px rgba(0, 255, 255, 0.3),
+    inset 0 0 4px rgba(0, 255, 255, 0.1);
+  --shadow-game-card-hover: 0 0 12px rgba(0, 255, 255, 0.5),
+    inset 0 0 6px rgba(0, 255, 255, 0.15);
+  --shadow-game-card-back: 0 0 8px rgba(255, 0, 255, 0.3);
+  --shadow-game-card-drag: 0 0 20px rgba(0, 255, 255, 0.6);
+  --shadow-overlay: 0 0 40px rgba(0, 255, 255, 0.3);
+  --shadow-toast: 0 0 12px rgba(0, 255, 255, 0.5);
+  --shadow-highlight: transparent;
+  --shadow-highlight-hover: transparent;
+  --backdrop: none;
+  --backdrop-card: none;
+  --backdrop-overlay: none;
+  --font: "Courier New", "Segoe UI", "PingFang SC", "Microsoft YaHei", monospace;
+  --bg-slot: rgba(0, 255, 255, 0.05);
+  --bg-card-face: rgba(15, 15, 25, 0.95);
+  --bg-card-back: rgba(255, 0, 255, 0.15);
+  --border-card: #00ffff;
+  --border-card-back: #ff00ff;
+  --color-slot: #00ffff;
+  --bg-overlay: rgba(5, 5, 10, 0.9);
+  --border-overlay: #00ffff;
+  --bg-toast: rgba(5, 5, 10, 0.95);
+  --ink-toast: #e0e0e0;
+  --suit-spade: #e0e0e0;
+  --suit-club: #e0e0e0;
+  --suit-heart: #ff3333;
+  --suit-diamond: #ff3333;
+  --scroll-shadow: rgba(0, 255, 255, 0.08);
+}
+
+/* 6. 复古终端 */
+html[data-theme="terminal"] {
+  --bg-base: #0c0c0c;
+  --bg-glass: #0f1f0f;
+  --bg-glass-hover: #1a2f1a;
+  --bg-tag: #0f1f0f;
+  --bg-select-option: #0c0c0c;
+  --bg-gradient: none;
+  --line: #33ff33;
+  --line-soft: rgba(51, 255, 51, 0.15);
+  --line-hover: #33ff33;
+  --ink: #33ff33;
+  --ink-soft: #2ecc2e;
+  --muted: #1a8c1a;
+  --accent: #33ff33;
+  --good: #33ff33;
+  --danger: #ff3333;
+  --radius: 0px;
+  --radius-sm: 0px;
+  --radius-md: 0px;
+  --radius-lg: 0px;
+  --radius-xl: 0px;
+  --shadow-button: none;
+  --shadow-button-hover: none;
+  --shadow-card: none;
+  --shadow-card-hover: none;
+  --shadow-game-card: none;
+  --shadow-game-card-hover: none;
+  --shadow-game-card-back: none;
+  --shadow-game-card-drag: none;
+  --shadow-overlay: none;
+  --shadow-toast: none;
+  --shadow-highlight: transparent;
+  --shadow-highlight-hover: transparent;
+  --backdrop: none;
+  --backdrop-card: none;
+  --backdrop-overlay: none;
+  --font: "Courier New", "SF Mono", "PingFang SC", "Microsoft YaHei", monospace;
+  --bg-slot: #0f1f0f;
+  --bg-card-face: #0c0c0c;
+  --bg-card-back: #1a1a1a;
+  --border-card: #33ff33;
+  --border-card-back: #33ff33;
+  --color-slot: #1a8c1a;
+  --bg-overlay: rgba(12, 12, 12, 0.95);
+  --border-overlay: #33ff33;
+  --bg-toast: #0c0c0c;
+  --ink-toast: #33ff33;
+  --suit-spade: #33ff33;
+  --suit-club: #33ff33;
+  --suit-heart: #ff3333;
+  --suit-diamond: #ff3333;
+  --scroll-shadow: rgba(51, 255, 51, 0.06);
+}
+
+/* 7. Material You */
+html[data-theme="material"] {
+  --bg-base: #fdfbf7;
+  --bg-glass: #ffffff;
+  --bg-glass-hover: #f5f5f5;
+  --bg-tag: #e8eaed;
+  --bg-select-option: #ffffff;
+  --bg-gradient: none;
+  --line: #dadce0;
+  --line-soft: #f1f3f4;
+  --line-hover: #dadce0;
+  --ink: #202124;
+  --ink-soft: #5f6368;
+  --muted: #80868b;
+  --accent: #1a73e8;
+  --good: #34a853;
+  --danger: #ea4335;
+  --radius: 8px;
+  --radius-sm: 4px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --shadow-button: 0 1px 2px rgba(60, 64, 67, 0.3),
+    0 1px 3px 1px rgba(60, 64, 67, 0.15);
+  --shadow-button-hover: 0 1px 2px rgba(60, 64, 67, 0.3),
+    0 2px 6px 2px rgba(60, 64, 67, 0.15);
+  --shadow-card: 0 1px 2px rgba(60, 64, 67, 0.3),
+    0 1px 3px 1px rgba(60, 64, 67, 0.15);
+  --shadow-card-hover: 0 1px 2px rgba(60, 64, 67, 0.3),
+    0 2px 6px 2px rgba(60, 64, 67, 0.15);
+  --shadow-game-card: 0 1px 2px rgba(60, 64, 67, 0.2),
+    0 1px 3px rgba(60, 64, 67, 0.1);
+  --shadow-game-card-hover: 0 1px 3px rgba(60, 64, 67, 0.3),
+    0 4px 8px 3px rgba(60, 64, 67, 0.15);
+  --shadow-game-card-back: 0 1px 2px rgba(60, 64, 67, 0.2),
+    0 1px 3px rgba(60, 64, 67, 0.1);
+  --shadow-game-card-drag: 0 4px 8px rgba(60, 64, 67, 0.3),
+    0 6px 12px 4px rgba(60, 64, 67, 0.15);
+  --shadow-overlay: 0 8px 16px rgba(60, 64, 67, 0.2),
+    0 12px 24px 6px rgba(60, 64, 67, 0.1);
+  --shadow-toast: 0 4px 8px rgba(60, 64, 67, 0.3);
+  --shadow-highlight: transparent;
+  --shadow-highlight-hover: transparent;
+  --backdrop: none;
+  --backdrop-card: none;
+  --backdrop-overlay: none;
+  --font: "Roboto", "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+  --bg-slot: #f1f3f4;
+  --bg-card-face: #ffffff;
+  --bg-card-back: #5f6368;
+  --border-card: #dadce0;
+  --border-card-back: #9aa0a6;
+  --color-slot: #80868b;
+  --bg-overlay: rgba(255, 255, 255, 0.9);
+  --border-overlay: #ffffff;
+  --bg-toast: #202124;
+  --ink-toast: #ffffff;
+  --scroll-shadow: rgba(60, 64, 67, 0.08);
+}
+
+/* 8. 蒸汽波 */
+html[data-theme="vaporwave"] {
+  --bg-base: #1a0b2e;
+  --bg-glass: rgba(255, 105, 180, 0.15);
+  --bg-glass-hover: rgba(255, 105, 180, 0.25);
+  --bg-tag: rgba(0, 255, 255, 0.1);
+  --bg-select-option: #1a0b2e;
+  --bg-gradient: linear-gradient(180deg, #2d1b4e 0%, #1a0b2e 50%, #0f0520 100%);
+  --line: #ff69b4;
+  --line-soft: rgba(255, 105, 180, 0.2);
+  --line-hover: #00ffff;
+  --ink: #f0f0f0;
+  --ink-soft: #c0c0c0;
+  --muted: #8080ff;
+  --accent: #00ffff;
+  --good: #39ff14;
+  --danger: #ff003c;
+  --radius: 4px;
+  --radius-sm: 2px;
+  --radius-md: 6px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --shadow-button: 0 0 10px rgba(0, 255, 255, 0.4),
+    0 0 20px rgba(255, 105, 180, 0.2);
+  --shadow-button-hover: 0 0 15px rgba(0, 255, 255, 0.6),
+    0 0 30px rgba(255, 105, 180, 0.3);
+  --shadow-card: 0 0 15px rgba(0, 255, 255, 0.3),
+    0 0 30px rgba(255, 105, 180, 0.15);
+  --shadow-card-hover: 0 0 25px rgba(0, 255, 255, 0.5),
+    0 0 50px rgba(255, 105, 180, 0.3);
+  --shadow-game-card: 0 0 10px rgba(0, 255, 255, 0.3),
+    0 4px 12px rgba(0, 0, 0, 0.2);
+  --shadow-game-card-hover: 0 0 15px rgba(0, 255, 255, 0.5),
+    0 8px 18px rgba(0, 0, 0, 0.25);
+  --shadow-game-card-back: 0 0 10px rgba(255, 105, 180, 0.4);
+  --shadow-game-card-drag: 0 0 25px rgba(0, 255, 255, 0.6),
+    0 16px 36px rgba(0, 0, 0, 0.3);
+  --shadow-overlay: 0 0 40px rgba(0, 255, 255, 0.3);
+  --shadow-toast: 0 0 15px rgba(0, 255, 255, 0.5);
+  --shadow-highlight: transparent;
+  --shadow-highlight-hover: transparent;
+  --backdrop: none;
+  --backdrop-card: none;
+  --backdrop-overlay: none;
+  --font: "Courier New", "Segoe UI", "PingFang SC", "Microsoft YaHei", monospace;
+  --bg-slot: rgba(255, 105, 180, 0.1);
+  --bg-card-face: rgba(26, 11, 46, 0.9);
+  --bg-card-back: rgba(255, 105, 180, 0.2);
+  --border-card: #00ffff;
+  --border-card-back: #ff69b4;
+  --color-slot: #ff69b4;
+  --bg-overlay: rgba(26, 11, 46, 0.9);
+  --border-overlay: #00ffff;
+  --bg-toast: rgba(26, 11, 46, 0.95);
+  --ink-toast: #f0f0f0;
+  --suit-spade: #f0f0f0;
+  --suit-club: #f0f0f0;
+  --suit-heart: #ff69b4;
+  --suit-diamond: #ff69b4;
+  --scroll-shadow: rgba(255, 105, 180, 0.08);
+}
+
+/* 9. 手绘温暖 */
+html[data-theme="sketch"] {
+  --bg-base: #faf8f5;
+  --bg-glass: #fffefb;
+  --bg-glass-hover: #ffffff;
+  --bg-tag: #f5f0e8;
+  --bg-select-option: #fffefb;
+  --bg-gradient: none;
+  --line: #8b7355;
+  --line-soft: #e8e0d5;
+  --line-hover: #6b5a45;
+  --ink: #3d3229;
+  --ink-soft: #6b5a45;
+  --muted: #7a6a5a;
+  --accent: #d4a373;
+  --good: #7fb069;
+  --danger: #c75b39;
+  --radius: 8px;
+  --radius-sm: 4px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 18px;
+  --shadow-button: 2px 2px 0 #8b7355;
+  --shadow-button-hover: 3px 3px 0 #6b5a45;
+  --shadow-card: 3px 3px 0 #8b7355;
+  --shadow-card-hover: 4px 4px 0 #6b5a45;
+  --shadow-game-card: 2px 2px 0 rgba(139, 115, 85, 0.3);
+  --shadow-game-card-hover: 3px 3px 0 rgba(139, 115, 85, 0.4);
+  --shadow-game-card-back: 2px 2px 0 rgba(139, 115, 85, 0.3);
+  --shadow-game-card-drag: 4px 4px 0 rgba(139, 115, 85, 0.4);
+  --shadow-overlay: 4px 4px 0 #8b7355;
+  --shadow-toast: 2px 2px 0 #8b7355;
+  --shadow-highlight: transparent;
+  --shadow-highlight-hover: transparent;
+  --backdrop: none;
+  --backdrop-card: none;
+  --backdrop-overlay: none;
+  --border-width: 2px;
+  --font: "Georgia", "Times New Roman", "Songti SC", "SimSun", "PingFang SC",
+    "Microsoft YaHei", serif;
+  --bg-slot: #f5f0e8;
+  --bg-card-face: #fffefb;
+  --bg-card-back: #d4c4a8;
+  --border-card: #8b7355;
+  --border-card-back: #a09080;
+  --color-slot: #a09080;
+  --bg-overlay: rgba(250, 248, 245, 0.95);
+  --border-overlay: #8b7355;
+  --bg-toast: rgba(61, 50, 41, 0.92);
+  --ink-toast: rgba(255, 255, 255, 0.95);
+  --scroll-shadow: rgba(139, 115, 85, 0.1);
+}
+
+/* ========== 主题特有覆盖（重做级别差异） ========== */
+
+/* flat — 瓷砖式列表 */
+html[data-theme="flat"] .game-grid {
+  gap: 0;
+  padding: 0;
+}
+html[data-theme="flat"] .game-card {
+  border-width: 0 0 1px 0;
+  border-radius: 0;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+  padding: 22px 56px;
+}
+html[data-theme="flat"] .game-card .name {
+  flex: 0 0 auto;
+  font-weight: 700;
+}
+html[data-theme="flat"] .game-card .desc {
+  margin-top: 0;
+  flex: 1 1 auto;
+}
+html[data-theme="flat"] .game-card .tag {
+  margin-top: 0;
+  flex: 0 0 auto;
+  border: none;
+  background: var(--accent);
+  color: #ffffff;
+  padding: 4px 12px;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+html[data-theme="flat"] .game-card:hover {
+  transform: none;
+  background: var(--bg-tag);
+}
+html[data-theme="flat"] .site-header {
+  border-bottom-width: 2px;
+}
+
+/* neumorphism — 胶囊与居中 */
+html[data-theme="neumorphism"] .game-card {
+  text-align: center;
+  padding: 36px 28px;
+}
+html[data-theme="neumorphism"] .game-card .tag {
+  border-radius: 999px;
+  padding: 6px 16px;
+}
+html[data-theme="neumorphism"] button,
+html[data-theme="neumorphism"] select {
+  border-radius: 999px;
+}
+
+/* cyberpunk — 角标与发光 */
+html[data-theme="cyberpunk"] .site-title {
+  text-shadow: 0 0 12px var(--accent);
+  letter-spacing: 3px;
+}
+html[data-theme="cyberpunk"] .game-card {
+  position: relative;
+}
+html[data-theme="cyberpunk"] .game-card::before {
+  content: "";
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  width: 10px;
+  height: 10px;
+  border-top: 2px solid var(--accent);
+  border-left: 2px solid var(--accent);
+  pointer-events: none;
+}
+html[data-theme="cyberpunk"] .game-card::after {
+  content: "";
+  position: absolute;
+  bottom: -1px;
+  right: -1px;
+  width: 10px;
+  height: 10px;
+  border-bottom: 2px solid var(--accent);
+  border-right: 2px solid var(--accent);
+  pointer-events: none;
+}
+html[data-theme="cyberpunk"] button,
+html[data-theme="cyberpunk"] select {
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* terminal — 命令行风格 */
+html[data-theme="terminal"] .site-header {
+  padding: 24px 56px 20px;
+}
+html[data-theme="terminal"] .site-title {
+  font-size: 20px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+html[data-theme="terminal"] .site-subtitle::before {
+  content: "> ";
+  color: var(--accent);
+}
+html[data-theme="terminal"] .game-card::before {
+  content: "$ ";
+  color: var(--accent);
+  font-weight: 700;
+}
+html[data-theme="terminal"] button,
+html[data-theme="terminal"] select {
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+html[data-theme="terminal"] select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' fill='none'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%231a8c1a' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+html[data-theme="terminal"] .theme-switcher select {
+  text-transform: none;
+}
+html[data-theme="terminal"] .custom-dropdown-trigger {
+  text-transform: none;
+}
+
+/* material — 药丸与大卡片 */
+html[data-theme="material"] .game-card {
+  padding: 32px;
+}
+html[data-theme="material"] .game-card .name {
+  font-size: 20px;
+}
+html[data-theme="material"] button,
+html[data-theme="material"] select {
+  border-radius: 999px;
+}
+
+/* vaporwave — 倾斜与扫描线 */
+html[data-theme="vaporwave"] select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' fill='none'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%238080ff' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+html[data-theme="vaporwave"] .site-title {
+  transform: skewX(-5deg);
+  text-transform: uppercase;
+  letter-spacing: 4px;
+}
+html[data-theme="vaporwave"] .game-card {
+  position: relative;
+  overflow: hidden;
+}
+html[data-theme="vaporwave"] .game-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 255, 255, 0.04) 2px,
+    rgba(0, 255, 255, 0.04) 4px
+  );
+  pointer-events: none;
+  border-radius: inherit;
+}
+
+/* sketch — 轻微旋转 */
+html[data-theme="sketch"] .game-card {
+  transform: rotate(-0.5deg);
+}
+html[data-theme="sketch"] .game-card:nth-child(even) {
+  transform: rotate(0.5deg);
+}
+html[data-theme="sketch"] .game-card:hover {
+  transform: rotate(-0.5deg) translateY(-3px);
+}
+html[data-theme="sketch"] .game-card:nth-child(even):hover {
+  transform: rotate(0.5deg) translateY(-3px);
+}
+html[data-theme="sketch"] .game-card:active {
+  transform: rotate(-0.5deg) translateY(-1px);
+}
+html[data-theme="sketch"] .game-card:nth-child(even):active {
+  transform: rotate(0.5deg) translateY(-1px);
+}
+html[data-theme="sketch"] button,
+html[data-theme="sketch"] select {
+  transform: rotate(-0.5deg);
+}
+html[data-theme="sketch"] button:active {
+  transform: rotate(-0.5deg) translateY(1px);
+}
+html[data-theme="sketch"] .theme-switcher select {
+  transform: none;
+}
+html[data-theme="sketch"] .custom-dropdown-trigger {
+  transform: none;
+}
+html[data-theme="sketch"] .site-header {
+  border-bottom-width: var(--border-width);
+}
+html[data-theme="sketch"] .topbar {
+  border-bottom-width: var(--border-width);
+}
+
+/* 首页移动端适配 */
+@media (max-width: 760px) {
+  .site-header {
+    padding: 40px 24px 24px;
+  }
+  .site-title {
+    font-size: 28px;
+  }
+  .game-grid {
+    padding: 28px 24px 48px;
+    gap: 16px;
+  }
+}
+
+@media (max-width: 420px) {
+  .site-header {
+    padding: 32px 18px 20px;
+  }
+  .site-title {
+    font-size: 24px;
+  }
+  .site-subtitle {
+    font-size: 13px;
+  }
+  .game-grid {
+    padding: 20px 18px 36px;
+    grid-template-columns: 1fr;
+  }
+  .game-card {
+    padding: 22px 22px 20px;
+  }
+  .game-card .name {
+    font-size: 16px;
+  }
+}

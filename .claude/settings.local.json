@@ -1,0 +1,48 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm create *)",
+      "Bash(npm install *)",
+      "Bash(npm run *)",
+      "Bash(python3 -m http.server 8080)",
+      "Bash(curl -s http://localhost:8080/)",
+      "Bash(start \"\" \"games\\\\spider\\\\index.html\")",
+      "Bash(node -c spider.js)",
+      "Bash(node --check games/spider/spider.js)",
+      "Bash(python -m http.server 8080 --bind 127.0.0.1)",
+      "Bash(node games/spider/test-solver.js)",
+      "Bash(node --check games/spider/solver-core.js)",
+      "Bash(node --check games/spider/solver-worker.js)",
+      "Bash(node games/spider/test-random.js)",
+      "Bash(node games/spider/test-greedy.js)",
+      "Bash(node games/spider/test-greedy-debug.js)",
+      "Bash(node games/spider/test-debug-trace.js)",
+      "Bash(node games/spider/test-random-trace.js)",
+      "Bash(node games/spider/test-greedy-trace2.js)",
+      "Bash(node games/spider/test-stochastic.js)",
+      "Bash(node games/spider/test-profile.js)",
+      "Bash(node games/spider/test-greedy-large.js)",
+      "Bash(node games/spider/test-quick.js)",
+      "Bash(node games/spider/test-multi.js)",
+      "Bash(node games/spider/test-solvable.js)",
+      "Bash(node games/spider/test-debug-gen.js)",
+      "Bash(node games/spider/test-construct.js)",
+      "Bash(node games/spider/test-debug-sanity.js)",
+      "Bash(node games/spider/test-verify.js)",
+      "Bash(node -e \"const { generateSolvableDeal } = require\\('./games/spider/solver-core.js'\\); for \\(let s of [1,2,4]\\) { const d = generateSolvableDeal\\(s\\); console.log\\(s, 'suit:', d.tableau.map\\(c=>c.length\\), 'stock:', d.stock.map\\(b=>b.length\\)\\); }\")",
+      "Bash(dir i:\\\\project\\\\qwq /B)",
+      "PowerShell(Add-Type -AssemblyName Microsoft.VisualBasic; [Microsoft.VisualBasic.FileIO.FileSystem]::DeleteDirectory\\('i:\\\\project\\\\qwq\\\\daum.pw', 'OnlyErrorDialogs', 'SendToRecycleBin'\\); if \\(Test-Path 'i:\\\\project\\\\qwq\\\\daum.pw'\\) { Write-Output 'STILL EXISTS' } else { Write-Output 'OK: moved to recycle bin' })",
+      "Bash(gh auth *)",
+      "Bash(where gh *)",
+      "Bash(git init *)",
+      "Bash(winget install *)",
+      "Bash(powershell *)",
+      "Bash(C:\\\\Program Files\\\\GitHub CLI\\\\gh.exe auth *)",
+      "Bash(git remote *)",
+      "Bash(git add *)"
+    ],
+    "additionalDirectories": [
+      "I:\\project\\qwq\\games\\spider"
+    ]
+  }
+}

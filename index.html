@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="sketch">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>小游戏合集</title>
+  <link rel="stylesheet" href="styles/common.css?v=1" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-row">
+      <div class="site-title">小游戏合集</div>
+      <div class="theme-switcher">
+        <select id="theme-switcher" title="切换主题">
+          <option value="dark">暗夜黑晶</option>
+          <option value="flat">扁平多彩</option>
+          <option value="neumorphism">新拟态</option>
+          <option value="cyberpunk">赛博朋克</option>
+          <option value="terminal">复古终端</option>
+          <option value="material">Material You</option>
+          <option value="vaporwave">蒸汽波</option>
+          <option value="sketch">手绘温暖</option>
+        </select>
+      </div>
+    </div>
+    <div class="site-subtitle">闲来无事，挑一个开始玩。</div>
+  </header>
+
+  <main class="game-grid">
+    <a class="game-card" href="games/spider/index.html" data-game="spider">
+      <div class="name">蜘蛛纸牌</div>
+      <div class="desc">经典单人扑克，凑齐 K→A 同花色 8 组即获胜。支持 1 / 2 / 4 花色三档难度。</div>
+      <div class="dash-stats" id="dash-spider"></div>
+      <span class="tag">纸牌</span>
+    </a>
+    <a class="game-card" href="games/2048/index.html" data-game="2048">
+      <div class="name">2048</div>
+      <div class="desc">滑动合并相同数字的方块，不断翻倍，目标达到 2048。支持键盘和触屏操作。</div>
+      <div class="dash-stats" id="dash-2048"></div>
+      <span class="tag">益智</span>
+    </a>
+    <a class="game-card" href="games/minesweeper/index.html" data-game="minesweeper">
+      <div class="name">扫雷</div>
+      <div class="desc">经典扫雷，左键揭开，右键标旗。三档难度可选，第一次点击保证安全。</div>
+      <div class="dash-stats" id="dash-minesweeper"></div>
+      <span class="tag">益智</span>
+    </a>
+  </main>
+
+  <script src="scripts/theme.js"></script>
+  <script>
+  (function() {
+    const todayStart = new Date().setHours(0, 0, 0, 0);
+
+    function fmtRate(won, total) {
+      return total > 0 ? Math.round((won / total) * 100) + '%' : '—';
+    }
+
+    function fmtTime(sec) {
+      if (sec == null) return '';
+      const m = Math.floor(sec / 60), s = sec % 60;
+      return m > 0 ? `${m}:${String(s).padStart(2,'0')}` : `${s}秒`;
+    }
+
+    function fmtTimeMs(ms) {
+      if (ms == null) return '';
+      return fmtTime(Math.floor(ms / 1000));
+    }
+
+    // Minesweeper
+    try {
+      const raw = localStorage.getItem('game_minesweeper_stats_v1');
+      if (raw) {
+        const data = JSON.parse(raw);
+        const total = data.started || 0;
+        const sessions = Array.isArray(data.sessions) ? data.sessions : [];
+        const won = sessions.filter(s => s.won).length;
+        const today = sessions.filter(s => s.completedAt >= todayStart).length;
+        const last = sessions[0];
+        let html = `<div class="dash-line"><span>今日 ${today} 局</span><span>胜率 ${fmtRate(won, total)}</span></div>`;
+        if (last) {
+          html += `<div class="dash-recent">最近：${last.difficulty === 'beginner' ? '初级' : last.difficulty === 'intermediate' ? '中级' : last.difficulty === 'expert' ? '高级' : '自定义'} ${fmtTime(last.time)} ${last.won ? '✅' : '❌'}</div>`;
+        }
+        document.getElementById('dash-minesweeper').innerHTML = html;
+      }
+    } catch {}
+
+    // 2048
+    try {
+      const raw = localStorage.getItem('game_2048_stats_v1');
+      if (raw) {
+        const data = JSON.parse(raw);
+        const total = data.started || 0;
+        const sessions = Array.isArray(data.sessions) ? data.sessions : [];
+        const won = sessions.filter(s => s.won).length;
+        const today = sessions.filter(s => s.completedAt >= todayStart).length;
+        const last = sessions[0];
+        let html = `<div class="dash-line"><span>今日 ${today} 局</span><span>胜率 ${fmtRate(won, total)}</span></div>`;
+        if (last) {
+          html += `<div class="dash-recent">最近：${last.maxTile || '—'} 方块 · ${last.score || 0} 分 ${last.won ? '✅' : '❌'}</div>`;
+        }
+        document.getElementById('dash-2048').innerHTML = html;
+      }
+    } catch {}
+
+    // Spider
+    try {
+      const raw = localStorage.getItem('spider_stats_v1');
+      if (raw) {
+        const data = JSON.parse(raw);
+        let total = 0, won = 0;
+        for (const k of ['1','2','4']) {
+          if (data[k]) { total += data[k].started || 0; won += data[k].won || 0; }
+        }
+        let html = `<div class="dash-line"><span>总计 ${total} 局</span><span>胜率 ${fmtRate(won, total)}</span></div>`;
+        document.getElementById('dash-spider').innerHTML = html;
+      }
+    } catch {}
+  })();
+  </script>
+</body>
+</html>
