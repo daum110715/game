@@ -90,9 +90,14 @@ function placeMines(grid, rows, cols, totalMines, safeRow, safeCol) {
   const excluded = new Set();
   for (let dr = -1; dr <= 1; dr++) {
     for (let dc = -1; dc <= 1; dc++) {
-      excluded.add(`${safeRow + dr},${safeCol + dc}`);
+      const er = safeRow + dr, ec = safeCol + dc;
+      if (er >= 0 && er < rows && ec >= 0 && ec < cols) {
+        excluded.add(`${er},${ec}`);
+      }
     }
   }
+  const available = rows * cols - excluded.size;
+  if (totalMines > available) totalMines = available;
   let placed = 0;
   while (placed < totalMines) {
     const r = Math.floor(Math.random() * rows);
@@ -191,7 +196,7 @@ function loadGame() {
     state.firstClick = data.firstClick;
     state.moves = data.moves || 0;
     state.resultRecorded = data.resultRecorded !== undefined ? !!data.resultRecorded : !!data.over;
-    state.history = [];
+    state.history = Array.isArray(data.history) ? data.history : [];
     return true;
   } catch {
     return false;
@@ -214,7 +219,11 @@ function saveBestTime(difficulty, time) {
   }
 }
 
-function loadStats() {
+function defaultStats() {
+  return { version: 2, started: 0, won: 0, sessions: [] };
+}
+
+function getStats() {
   try {
     const raw = JSON.parse(localStorage.getItem(STATS_KEY));
     if (raw && typeof raw.started === "number" && Array.isArray(raw.sessions)) {
@@ -233,22 +242,34 @@ function loadStats() {
         }
         deduped.push(s);
       }
+      let needsSave = false;
       if (deduped.length !== raw.sessions.length) {
         raw.sessions = deduped;
+        needsSave = true;
+      }
+      if (!Number.isFinite(raw.version)) {
+        raw.version = 2;
+        raw.won = raw.sessions.filter((s) => s.won).length;
+        needsSave = true;
+      }
+      if (needsSave) {
         try { localStorage.setItem(STATS_KEY, JSON.stringify(raw)); } catch {}
       }
       return raw;
     }
   } catch {}
-  return { started: 0, sessions: [] };
+  return defaultStats();
 }
 
 function saveStats(stats) {
-  try { localStorage.setItem(STATS_KEY, JSON.stringify(stats)); } catch {}
+  try {
+    stats.won = stats.sessions.filter((s) => s.won).length;
+    localStorage.setItem(STATS_KEY, JSON.stringify(stats));
+  } catch {}
 }
 
 function recordStart() {
-  const stats = loadStats();
+  const stats = getStats();
   stats.started += 1;
   saveStats(stats);
 }
@@ -256,7 +277,7 @@ function recordStart() {
 function recordResult() {
   if (state.firstClick || state.resultRecorded || state.grid.length === 0) return;
   const now = Date.now();
-  const stats = loadStats();
+  const stats = getStats();
   const last = stats.sessions[0];
   if (
     last &&
@@ -340,7 +361,6 @@ function undo() {
   if (!state.over) startTimer();
   overlayEl.classList.remove('is-visible');
   setTimeout(() => { overlayEl.hidden = true; }, 250);
-  render();
   saveGame();
 }
 
@@ -433,7 +453,7 @@ function formatResultDate(timestamp) {
 const DIFFICULTY_LABELS = { beginner: "初级", intermediate: "中级", expert: "高级", custom: "自定义" };
 
 function renderStatsPanel() {
-  const stats = loadStats();
+  const stats = getStats();
   const best = getBestTimes();
   let won = 0;
   for (const s of stats.sessions) {
@@ -531,9 +551,10 @@ function animateReveal(cells, centerR, centerC) {
   void boardEl.offsetHeight;
 
   const delayPerCell = 20;
+  const colsSnapshot = state.cols;
   cells.forEach(({ r, c }, i) => {
     setTimeout(() => {
-      const idx = r * state.cols + c;
+      const idx = r * colsSnapshot + c;
       const el = boardEl.children[idx];
       if (el) {
         el.style.transition = 'transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.25s ease';
@@ -545,7 +566,7 @@ function animateReveal(cells, centerR, centerC) {
 
   setTimeout(() => {
     cells.forEach(({ r, c }) => {
-      const idx = r * state.cols + c;
+      const idx = r * colsSnapshot + c;
       const el = boardEl.children[idx];
       if (el) {
         el.style.transition = '';
@@ -576,9 +597,10 @@ function celebrateReveal(cells, centerR, centerC) {
   void boardEl.offsetHeight;
 
   const delayPerCell = 15;
+  const colsSnapshot = state.cols;
   cells.forEach(({ r, c }, i) => {
     setTimeout(() => {
-      const idx = r * state.cols + c;
+      const idx = r * colsSnapshot + c;
       const el = boardEl.children[idx];
       if (el) {
         el.style.transition = 'transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1)';
@@ -589,7 +611,7 @@ function celebrateReveal(cells, centerR, centerC) {
 
   setTimeout(() => {
     cells.forEach(({ r, c }) => {
-      const idx = r * state.cols + c;
+      const idx = r * colsSnapshot + c;
       const el = boardEl.children[idx];
       if (el) {
         el.style.transition = '';
@@ -681,23 +703,7 @@ function markHitCell(r, c) {
 
 // --- Overlay ---
 
-function launchConfetti() {
-  const colors = ['#ff3b30', '#ff9500', '#ffcc00', '#4cd964', '#5ac8fa', '#007aff', '#5856d6', '#ff2d55'];
-  const count = 80;
-  for (let i = 0; i < count; i++) {
-    const el = document.createElement('div');
-    el.className = 'confetti-piece';
-    el.style.left = (Math.random() * 100) + 'vw';
-    el.style.background = colors[Math.floor(Math.random() * colors.length)];
-    el.style.width = (4 + Math.random() * 8) + 'px';
-    el.style.height = (4 + Math.random() * 8) + 'px';
-    el.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
-    el.style.animationDuration = (2 + Math.random() * 1.5) + 's';
-    el.style.animationDelay = (Math.random() * 0.5) + 's';
-    document.body.appendChild(el);
-    setTimeout(() => { if (el.parentNode) el.parentNode.removeChild(el); }, 4000);
-  }
-}
+/* confetti shared: scripts/confetti.js */
 
 function showOverlay(won) {
   const cfg = DIFFICULTIES[state.difficulty] || { cols: state.cols, rows: state.rows, mines: state.totalMines };
@@ -736,7 +742,7 @@ function getDifficultyConfig(difficulty) {
 function startNewGame(difficulty) {
   stopTimer();
   clearHint();
-  if (state.over || (state.started && !state.firstClick)) {
+  if (state.over) {
     recordResult();
   }
 
@@ -824,19 +830,19 @@ function validateCustom() {
   const cols = Math.floor(Number(customColsEl.value));
   const rows = Math.floor(Number(customRowsEl.value));
   const mines = Math.floor(Number(customMinesEl.value));
-  const maxCells = cols * rows;
 
-  if (cols < 5 || cols > 50) {
+  if (isNaN(cols) || cols < 5 || cols > 50) {
     customHintEl.textContent = "宽度需要在 5~50 之间";
     customHintEl.style.color = "var(--danger)";
     return null;
   }
-  if (rows < 5 || rows > 30) {
+  if (isNaN(rows) || rows < 5 || rows > 30) {
     customHintEl.textContent = "高度需要在 5~30 之间";
     customHintEl.style.color = "var(--danger)";
     return null;
   }
-  if (mines < 1 || mines > maxCells - 1) {
+  const maxCells = cols * rows;
+  if (isNaN(mines) || mines < 1 || mines > maxCells - 1) {
     customHintEl.textContent = `雷数需要在 1~${maxCells - 1} 之间`;
     customHintEl.style.color = "var(--danger)";
     return null;
@@ -1156,12 +1162,7 @@ boardEl.addEventListener("touchend", (e) => {
   }
 });
 
-boardEl.addEventListener("click", (e) => {
-  if (suppressClick) return;
-  const cell = e.target.closest(".cell");
-  if (!cell) return;
-  handleClick(Number(cell.dataset.row), Number(cell.dataset.col));
-});
+
 
 document.addEventListener("keydown", (e) => {
   if (e.key === "Escape") {
@@ -1243,7 +1244,7 @@ newBtnEl.addEventListener("click", () => requestNewGame(difficultyEl.value));
 difficultyEl.addEventListener("change", () => requestNewGame(difficultyEl.value));
 undoBtnEl.addEventListener("click", undo);
 hintBtnEl.addEventListener("click", showHint);
-overlayNewEl.addEventListener("click", () => { overlayEl.classList.remove('is-visible'); setTimeout(() => { overlayEl.hidden = true; }, 250); startNewGame(difficultyEl.value); });
+overlayNewEl.addEventListener("click", () => startNewGame(difficultyEl.value));
 
 overlayEl.addEventListener("click", (e) => {
   if (e.target === overlayEl) {

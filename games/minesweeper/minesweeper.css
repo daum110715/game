@@ -253,7 +253,7 @@ html[data-theme="dark"] .cell.revealed[data-count] {
 }
 
 .overlay[hidden] {
-  display: flex !important;
+  display: none;
 }
 
 .overlay.is-visible {

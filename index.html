@@ -20,6 +20,16 @@
           <option value="material">Material You</option>
           <option value="vaporwave">蒸汽波</option>
           <option value="sketch">手绘温暖</option>
+          <option value="clay">黏土</option>
+          <option value="brutalist">粗野主义</option>
+          <option value="pixel">像素</option>
+          <option value="editorial">杂志</option>
+          <option value="swiss">瑞士</option>
+          <option value="bento">便当盒</option>
+          <option value="noir">黑色电影</option>
+          <option value="parchment">羊皮纸</option>
+          <option value="bauhaus">包豪斯</option>
+          <option value="synthwave">合成器波</option>
         </select>
       </div>
     </div>
@@ -44,6 +54,36 @@
       <div class="desc">经典扫雷，左键揭开，右键标旗。三档难度可选，第一次点击保证安全。</div>
       <div class="dash-stats" id="dash-minesweeper"></div>
       <span class="tag">益智</span>
+    </a>
+    <a class="game-card" href="games/klondike/index.html" data-game="klondike">
+      <div class="name">纸牌</div>
+      <div class="desc">经典克朗代克纸牌，将 52 张牌按同花色 A→K 依次移到 4 个目标堆即获胜。支持翻 1 张 / 3 张两种发牌模式。</div>
+      <div class="dash-stats" id="dash-klondike"></div>
+      <span class="tag">纸牌</span>
+    </a>
+    <a class="game-card" href="games/freecell/index.html" data-game="freecell">
+      <div class="name">空当接龙</div>
+      <div class="desc">经典空当接龙，全部 52 张牌开局亮出，利用 4 个中转空列将所有牌按花色 A→K 移入目标堆。几乎每局都可解。</div>
+      <div class="dash-stats" id="dash-freecell"></div>
+      <span class="tag">纸牌</span>
+    </a>
+    <a class="game-card" href="games/sudoku/index.html" data-game="sudoku">
+      <div class="name">数独</div>
+      <div class="desc">标准 9×9 数独，内置三种难度，支持笔记、高亮冲突、撤销、提示和自动保存。</div>
+      <div class="dash-stats" id="dash-sudoku"></div>
+      <span class="tag">益智</span>
+    </a>
+    <a class="game-card" href="games/snake/index.html" data-game="snake">
+      <div class="name">贪吃蛇</div>
+      <div class="desc">经典贪吃蛇，用方向键控制蛇移动吃到食物，身体会越来越长，碰到墙壁或自己即游戏结束。</div>
+      <div class="dash-stats" id="dash-snake"></div>
+      <span class="tag">街机</span>
+    </a>
+    <a class="game-card" href="games/tetris/index.html" data-game="tetris">
+      <div class="name">俄罗斯方块</div>
+      <div class="desc">经典俄罗斯方块，7-bag 随机生成，SRS 旋转系统，支持暂存、硬降、幽灵方块提示。</div>
+      <div class="dash-stats" id="dash-tetris"></div>
+      <span class="tag">街机</span>
     </a>
   </main>
 
@@ -79,7 +119,7 @@
         const last = sessions[0];
         let html = `<div class="dash-line"><span>今日 ${today} 局</span><span>胜率 ${fmtRate(won, total)}</span></div>`;
         if (last) {
-          html += `<div class="dash-recent">最近：${last.difficulty === 'beginner' ? '初级' : last.difficulty === 'intermediate' ? '中级' : last.difficulty === 'expert' ? '高级' : '自定义'} ${fmtTime(last.time)} ${last.won ? '✅' : '❌'}</div>`;
+          html += `<div class="dash-recent">最近：${last.difficulty === 'beginner' ? '初级' : last.difficulty === 'intermediate' ? '中级' : last.difficulty === 'expert' ? '高级' : '自定义'} ${fmtTime(last.time)} ${last.won ? '胜利' : '失败'}</div>`;
         }
         document.getElementById('dash-minesweeper').innerHTML = html;
       }
@@ -97,7 +137,7 @@
         const last = sessions[0];
         let html = `<div class="dash-line"><span>今日 ${today} 局</span><span>胜率 ${fmtRate(won, total)}</span></div>`;
         if (last) {
-          html += `<div class="dash-recent">最近：${last.maxTile || '—'} 方块 · ${last.score || 0} 分 ${last.won ? '✅' : '❌'}</div>`;
+          html += `<div class="dash-recent">最近：${last.maxTile || '—'} 方块 · ${last.score || 0} 分 ${last.won ? '胜利' : '失败'}</div>`;
         }
         document.getElementById('dash-2048').innerHTML = html;
       }
@@ -114,6 +154,92 @@
         }
         let html = `<div class="dash-line"><span>总计 ${total} 局</span><span>胜率 ${fmtRate(won, total)}</span></div>`;
         document.getElementById('dash-spider').innerHTML = html;
+      }
+    } catch {}
+
+    // Klondike
+    try {
+      const raw = localStorage.getItem('klondike_stats_v1');
+      if (raw) {
+        const data = JSON.parse(raw);
+        let total = 0, won = 0;
+        for (const k of ['1','3']) {
+          if (data[k]) { total += data[k].started || 0; won += data[k].won || 0; }
+        }
+        let html = `<div class="dash-line"><span>总计 ${total} 局</span><span>胜率 ${fmtRate(won, total)}</span></div>`;
+        document.getElementById('dash-klondike').innerHTML = html;
+      }
+    } catch {}
+
+    // FreeCell
+    try {
+      const raw = localStorage.getItem('freecell_stats_v1');
+      if (raw) {
+        const data = JSON.parse(raw);
+        const total = data.started || 0;
+        const sessions = Array.isArray(data.sessions) ? data.sessions : [];
+        const won = sessions.filter(s => s.won).length;
+        const today = sessions.filter(s => s.completedAt >= todayStart).length;
+        const last = sessions[0];
+        let html = `<div class="dash-line"><span>今日 ${today} 局</span><span>胜率 ${fmtRate(won, total)}</span></div>`;
+        if (last) {
+          html += `<div class="dash-recent">最近：${fmtTimeMs(last.time)} ${last.won ? '胜利' : '失败'}</div>`;
+        }
+        document.getElementById('dash-freecell').innerHTML = html;
+      }
+    } catch {}
+
+    // Sudoku
+    try {
+      const raw = localStorage.getItem('game_sudoku_stats_v1');
+      if (raw) {
+        const data = JSON.parse(raw);
+        const total = data.started || 0;
+        const sessions = Array.isArray(data.sessions) ? data.sessions : [];
+        const won = sessions.filter(s => s.won).length;
+        const today = sessions.filter(s => s.completedAt >= todayStart).length;
+        const last = sessions[0];
+        let html = `<div class="dash-line"><span>今日 ${today} 局</span><span>胜率 ${fmtRate(won, total)}</span></div>`;
+        if (last) {
+          html += `<div class="dash-recent">最近：${last.difficulty === 'easy' ? '简单' : last.difficulty === 'medium' ? '中等' : '困难'} ${fmtTimeMs(last.time)} ${last.won ? '胜利' : '失败'}</div>`;
+        }
+        document.getElementById('dash-sudoku').innerHTML = html;
+      }
+    } catch {}
+
+    // Snake
+    try {
+      const raw = localStorage.getItem('game_snake_stats_v1');
+      if (raw) {
+        const data = JSON.parse(raw);
+        const total = data.started || 0;
+        const sessions = Array.isArray(data.sessions) ? data.sessions : [];
+        const won = sessions.filter(s => s.won).length;
+        const today = sessions.filter(s => s.completedAt >= todayStart).length;
+        const last = sessions[0];
+        let html = `<div class="dash-line"><span>今日 ${today} 局</span><span>胜率 ${fmtRate(won, total)}</span></div>`;
+        if (last) {
+          html += `<div class="dash-recent">最近：${last.score || 0} 分 · 长度 ${last.length || '—'} ${last.won ? '胜利' : '失败'}</div>`;
+        }
+        document.getElementById('dash-snake').innerHTML = html;
+      }
+    } catch {}
+
+    // Tetris
+    try {
+      const raw = localStorage.getItem('game_tetris_stats_v2');
+      if (raw) {
+        const data = JSON.parse(raw);
+        const total = data.started || 0;
+        const sessions = Array.isArray(data.sessions) ? data.sessions : [];
+        const today = sessions.filter(s => s.completedAt >= todayStart).length;
+        const last = sessions[0];
+        const best = sessions.reduce((m, s) => Math.max(m, s.score || 0), 0);
+        let html = `<div class="dash-line"><span>今日 ${today} 局</span><span>最佳 ${best}</span></div>`;
+        if (last) {
+          html += `<div class="dash-recent">最近：${last.score || 0} 分 · ${last.lines || 0} 行 · 等级 ${last.level || 1}</div>`;
+        }
+        document.getElementById('dash-tetris').innerHTML = html;
       }
     } catch {}
   })();

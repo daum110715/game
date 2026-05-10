@@ -1240,7 +1240,7 @@ html[data-theme="sketch"] {
   100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
 }
 
-/* --- Help overlay ---
+/* --- Help overlay --- */
 
 .help-section {
   margin-top: 16px;

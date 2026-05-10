@@ -39,7 +39,11 @@
       "Bash(powershell *)",
       "Bash(C:\\\\Program Files\\\\GitHub CLI\\\\gh.exe auth *)",
       "Bash(git remote *)",
-      "Bash(git add *)"
+      "Bash(git add *)",
+      "Bash(git rm *)",
+      "Bash(git commit *)",
+      "Bash(git branch *)",
+      "Bash(git push *)"
     ],
     "additionalDirectories": [
       "I:\\project\\qwq\\games\\spider"

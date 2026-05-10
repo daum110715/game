@@ -1,5 +1,5 @@
-:root {
-  /* 颜色 */
+﻿:root {
+  /* 棰滆壊 */
   --bg-base: #f5f5f7;
   --bg-glass: rgba(255, 255, 255, 0.6);
   --bg-glass-hover: rgba(255, 255, 255, 0.85);
@@ -16,14 +16,14 @@
   --good: #5a8a6a;
   --danger: #c5384a;
 
-  /* 形状 */
+  /* 褰㈢姸 */
   --radius: 10px;
   --radius-sm: 4px;
   --radius-md: 8px;
   --radius-lg: 14px;
   --radius-xl: 18px;
 
-  /* 效果 */
+  /* 鏁堟灉 */
   --shadow-button: inset 0 1px 0 rgba(255, 255, 255, 0.6),
     0 1px 2px rgba(0, 0, 0, 0.04);
   --shadow-button-hover: inset 0 1px 0 rgba(255, 255, 255, 0.6),
@@ -54,7 +54,7 @@
   --font: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI",
     "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
 
-  /* 游戏页面通用变量 */
+  /* 娓告垙椤甸潰閫氱敤鍙橀噺 */
   --bg-slot: rgba(255, 255, 255, 0.4);
   --bg-card-face: rgba(255, 255, 255, 0.72);
   --bg-card-back: rgba(70, 75, 90, 0.28);
@@ -162,7 +162,7 @@ select option {
   color: var(--ink);
 }
 
-/* 头部 */
+/* 澶撮儴 */
 .site-header {
   padding: 72px 56px 36px;
   border-bottom: 1px solid var(--line);
@@ -187,14 +187,14 @@ select option {
   letter-spacing: 0.5px;
 }
 
-/* 主题切换器 */
+/* 涓婚鍒囨崲鍣?*/
 .theme-switcher select {
   font-size: 12px;
   padding: 5px 10px;
   min-height: 30px;
 }
 
-/* 自定义下拉 */
+/* 鑷畾涔変笅鎷?*/
 .custom-dropdown {
   position: relative;
 }
@@ -284,7 +284,7 @@ select option {
   font-weight: 600;
 }
 
-/* 游戏卡片网格 */
+/* 娓告垙鍗＄墖缃戞牸 */
 .game-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
@@ -347,6 +347,9 @@ select option {
   padding-top: 12px;
   border-top: 1px dashed var(--line);
 }
+.dash-stats:empty {
+  display: none;
+}
 
 .dash-line {
   display: flex;
@@ -371,11 +374,538 @@ select option {
   text-overflow: ellipsis;
 }
 
-/* ========== 主题定义 ========== */
 
-/* 1. glass（默认） */
 
-/* 2. 暗夜黑晶 */
+
+
+
+
+
+
+
+
+
+/* clay — 黏土拟态 */
+html[data-theme="clay"] {
+  --bg-base: #f0e6e0;
+  --bg-glass: #f5ebe5;
+  --bg-glass-hover: #faf5f0;
+  --bg-tag: rgba(200, 160, 130, 0.12);
+  --bg-select-option: #faf5f0;
+  --bg-gradient: linear-gradient(180deg, #f5ebe5 0%, #f0e6e0 100%);
+  --line: rgba(180, 140, 110, 0.25);
+  --line-soft: rgba(180, 140, 110, 0.1);
+  --line-hover: rgba(180, 140, 110, 0.35);
+  --ink: #4a3a30;
+  --ink-soft: #7a6a5a;
+  --muted: #a09080;
+  --accent: #c4845c;
+  --good: #7fb069;
+  --danger: #c75b39;
+  --radius: 24px;
+  --radius-sm: 16px;
+  --radius-md: 28px;
+  --radius-lg: 36px;
+  --radius-xl: 48px;
+  --shadow-button: 8px 8px 16px rgba(180, 150, 130, 0.4), -8px -8px 16px rgba(255, 255, 255, 0.6);
+  --shadow-button-hover: 12px 12px 24px rgba(180, 150, 130, 0.5), -12px -12px 24px rgba(255, 255, 255, 0.7);
+  --shadow-card: 10px 10px 20px rgba(180, 150, 130, 0.35), -10px -10px 20px rgba(255, 255, 255, 0.55);
+  --shadow-card-hover: 14px 14px 28px rgba(180, 150, 130, 0.45), -14px -14px 28px rgba(255, 255, 255, 0.65);
+  --shadow-game-card: 8px 8px 16px rgba(180, 150, 130, 0.3), -8px -8px 16px rgba(255, 255, 255, 0.5);
+  --shadow-game-card-hover: 12px 12px 24px rgba(180, 150, 130, 0.4), -12px -12px 24px rgba(255, 255, 255, 0.6);
+  --shadow-game-card-back: inset 4px 4px 8px rgba(180, 150, 130, 0.3), inset -4px -4px 8px rgba(255, 255, 255, 0.5);
+  --shadow-game-card-drag: 16px 16px 32px rgba(180, 150, 130, 0.4), -16px -16px 32px rgba(255, 255, 255, 0.6);
+  --shadow-overlay: 16px 16px 32px rgba(180, 150, 130, 0.35), -16px -16px 32px rgba(255, 255, 255, 0.55);
+  --shadow-toast: 8px 8px 20px rgba(180, 150, 130, 0.4);
+  --shadow-highlight: rgba(255, 255, 255, 0.5);
+  --shadow-highlight-hover: rgba(255, 255, 255, 0.7);
+  --backdrop: none;
+  --backdrop-card: none;
+  --backdrop-overlay: none;
+  --border-width: 0px;
+  --bg-slot: #e8ddd5;
+  --bg-card-face: #f5ebe5;
+  --bg-card-back: #c8a890;
+  --border-card: transparent;
+  --border-card-back: transparent;
+  --color-slot: #a09080;
+  --bg-overlay: rgba(240, 230, 224, 0.9);
+  --border-overlay: transparent;
+  --bg-toast: #4a3a30;
+  --ink-toast: #f5ebe5;
+  --scroll-shadow: rgba(180, 150, 130, 0.2);
+}
+
+/* brutalist — 粗野主义 */
+html[data-theme="brutalist"] {
+  --bg-base: #ffffff;
+  --bg-glass: #ffffff;
+  --bg-glass-hover: #f5f5f5;
+  --bg-tag: #000000;
+  --bg-select-option: #ffffff;
+  --bg-gradient: none;
+  --line: #000000;
+  --line-soft: #e0e0e0;
+  --line-hover: #000000;
+  --ink: #000000;
+  --ink-soft: #333333;
+  --muted: #666666;
+  --accent: #000000;
+  --good: #000000;
+  --danger: #ff0000;
+  --radius: 0px;
+  --radius-sm: 0px;
+  --radius-md: 0px;
+  --radius-lg: 0px;
+  --radius-xl: 0px;
+  --shadow-button: 4px 4px 0 #000000;
+  --shadow-button-hover: 6px 6px 0 #000000;
+  --shadow-card: 4px 4px 0 #000000;
+  --shadow-card-hover: 8px 8px 0 #000000;
+  --shadow-game-card: 3px 3px 0 #000000;
+  --shadow-game-card-hover: 6px 6px 0 #000000;
+  --shadow-game-card-back: 3px 3px 0 #000000;
+  --shadow-game-card-drag: 8px 8px 0 #000000;
+  --shadow-overlay: 8px 8px 0 #000000;
+  --shadow-toast: 4px 4px 0 #000000;
+  --shadow-highlight: transparent;
+  --shadow-highlight-hover: transparent;
+  --backdrop: none;
+  --backdrop-card: none;
+  --backdrop-overlay: none;
+  --border-width: 3px;
+  --bg-slot: #ffffff;
+  --bg-card-face: #ffffff;
+  --bg-card-back: #000000;
+  --border-card: #000000;
+  --border-card-back: #000000;
+  --color-slot: #000000;
+  --bg-overlay: rgba(255, 255, 255, 0.95);
+  --border-overlay: #000000;
+  --bg-toast: #000000;
+  --ink-toast: #ffffff;
+  --scroll-shadow: rgba(0, 0, 0, 0.1);
+}
+
+/* pixel — 像素艺术 */
+html[data-theme="pixel"] {
+  --bg-base: #1a1a2e;
+  --bg-glass: #16213e;
+  --bg-glass-hover: #1a2a4a;
+  --bg-tag: rgba(0, 255, 136, 0.1);
+  --bg-select-option: #16213e;
+  --bg-gradient: linear-gradient(180deg, #16213e 0%, #1a1a2e 100%);
+  --line: #0f3460;
+  --line-soft: rgba(15, 52, 96, 0.5);
+  --line-hover: #e94560;
+  --ink: #eaeaea;
+  --ink-soft: #a0a0a0;
+  --muted: #533483;
+  --accent: #00ff88;
+  --good: #00ff88;
+  --danger: #e94560;
+  --radius: 0px;
+  --radius-sm: 0px;
+  --radius-md: 0px;
+  --radius-lg: 0px;
+  --radius-xl: 0px;
+  --shadow-button: 4px 4px 0 rgba(0, 0, 0, 0.5), inset 0 0 0 2px var(--line);
+  --shadow-button-hover: 6px 6px 0 rgba(0, 0, 0, 0.5), inset 0 0 0 2px var(--accent);
+  --shadow-card: 6px 6px 0 rgba(0, 0, 0, 0.5), inset 0 0 0 2px var(--line);
+  --shadow-card-hover: 8px 8px 0 rgba(0, 0, 0, 0.5), inset 0 0 0 2px var(--accent);
+  --shadow-game-card: 4px 4px 0 rgba(0, 0, 0, 0.5), inset 0 0 0 2px var(--line);
+  --shadow-game-card-hover: 6px 6px 0 rgba(0, 0, 0, 0.5), inset 0 0 0 2px var(--accent);
+  --shadow-game-card-back: inset 0 0 0 2px var(--line);
+  --shadow-game-card-drag: 8px 8px 0 rgba(0, 0, 0, 0.5);
+  --shadow-overlay: 8px 8px 0 rgba(0, 0, 0, 0.5), inset 0 0 0 2px var(--line);
+  --shadow-toast: 4px 4px 0 rgba(0, 0, 0, 0.5);
+  --shadow-highlight: transparent;
+  --shadow-highlight-hover: transparent;
+  --backdrop: none;
+  --backdrop-card: none;
+  --backdrop-overlay: none;
+  --border-width: 0px;
+  --font: "Press Start 2P", "Courier New", monospace;
+  --bg-slot: #0f3460;
+  --bg-card-face: #16213e;
+  --bg-card-back: #0f3460;
+  --border-card: #533483;
+  --border-card-back: #e94560;
+  --color-slot: #533483;
+  --bg-overlay: rgba(22, 33, 62, 0.95);
+  --border-overlay: #0f3460;
+  --bg-toast: #000000;
+  --ink-toast: #00ff88;
+  --scroll-shadow: rgba(0, 255, 136, 0.1);
+}
+
+/* editorial — 杂志编辑 */
+html[data-theme="editorial"] {
+  --bg-base: #faf9f6;
+  --bg-glass: #ffffff;
+  --bg-glass-hover: #f5f4f0;
+  --bg-tag: rgba(139, 115, 85, 0.06);
+  --bg-select-option: #ffffff;
+  --bg-gradient: none;
+  --line: #d4cec5;
+  --line-soft: #eae6df;
+  --line-hover: #b8b0a5;
+  --ink: #2c2c2c;
+  --ink-soft: #5a5a5a;
+  --muted: #8a8a8a;
+  --accent: #c9a96e;
+  --good: #6b8e6b;
+  --danger: #b85450;
+  --radius: 2px;
+  --radius-sm: 1px;
+  --radius-md: 3px;
+  --radius-lg: 4px;
+  --radius-xl: 6px;
+  --shadow-button: none;
+  --shadow-button-hover: none;
+  --shadow-card: none;
+  --shadow-card-hover: none;
+  --shadow-game-card: none;
+  --shadow-game-card-hover: none;
+  --shadow-game-card-back: none;
+  --shadow-game-card-drag: none;
+  --shadow-overlay: none;
+  --shadow-toast: none;
+  --shadow-highlight: transparent;
+  --shadow-highlight-hover: transparent;
+  --backdrop: none;
+  --backdrop-card: none;
+  --backdrop-overlay: none;
+  --border-width: 1px;
+  --font: "Georgia", "Times New Roman", "Songti SC", serif;
+  --bg-slot: #f0eeea;
+  --bg-card-face: #ffffff;
+  --bg-card-back: #d4cec5;
+  --border-card: #d4cec5;
+  --border-card-back: #b8b0a5;
+  --color-slot: #b8b0a5;
+  --bg-overlay: rgba(250, 249, 246, 0.95);
+  --border-overlay: #d4cec5;
+  --bg-toast: #2c2c2c;
+  --ink-toast: #faf9f6;
+  --scroll-shadow: rgba(0, 0, 0, 0.04);
+}
+
+/* swiss — 瑞士现代主义 */
+html[data-theme="swiss"] {
+  --bg-base: #f4f4f4;
+  --bg-glass: #ffffff;
+  --bg-glass-hover: #f0f0f0;
+  --bg-tag: rgba(0, 0, 0, 0.03);
+  --bg-select-option: #ffffff;
+  --bg-gradient: none;
+  --line: #000000;
+  --line-soft: #e0e0e0;
+  --line-hover: #000000;
+  --ink: #000000;
+  --ink-soft: #333333;
+  --muted: #888888;
+  --accent: #e30613;
+  --good: #000000;
+  --danger: #e30613;
+  --radius: 0px;
+  --radius-sm: 0px;
+  --radius-md: 0px;
+  --radius-lg: 0px;
+  --radius-xl: 0px;
+  --shadow-button: none;
+  --shadow-button-hover: none;
+  --shadow-card: none;
+  --shadow-card-hover: none;
+  --shadow-game-card: none;
+  --shadow-game-card-hover: none;
+  --shadow-game-card-back: none;
+  --shadow-game-card-drag: none;
+  --shadow-overlay: none;
+  --shadow-toast: none;
+  --shadow-highlight: transparent;
+  --shadow-highlight-hover: transparent;
+  --backdrop: none;
+  --backdrop-card: none;
+  --backdrop-overlay: none;
+  --border-width: 1px;
+  --font: "Helvetica Neue", Helvetica, Arial, "PingFang SC", sans-serif;
+  --bg-slot: #e8e8e8;
+  --bg-card-face: #ffffff;
+  --bg-card-back: #000000;
+  --border-card: #000000;
+  --border-card-back: #000000;
+  --color-slot: #888888;
+  --bg-overlay: rgba(255, 255, 255, 0.95);
+  --border-overlay: #000000;
+  --bg-toast: #000000;
+  --ink-toast: #ffffff;
+  --scroll-shadow: rgba(0, 0, 0, 0.05);
+}
+
+/* bento — 便当盒网格 */
+html[data-theme="bento"] {
+  --bg-base: #f5f5f7;
+  --bg-glass: rgba(255, 255, 255, 0.8);
+  --bg-glass-hover: rgba(255, 255, 255, 0.95);
+  --bg-tag: rgba(0, 0, 0, 0.04);
+  --bg-select-option: #ffffff;
+  --bg-gradient: linear-gradient(180deg, #fbfbfd 0%, #f5f5f7 100%);
+  --line: rgba(0, 0, 0, 0.06);
+  --line-soft: rgba(0, 0, 0, 0.03);
+  --line-hover: rgba(0, 0, 0, 0.12);
+  --ink: #1d1d1f;
+  --ink-soft: #424245;
+  --muted: #86868b;
+  --accent: #0071e3;
+  --good: #34c759;
+  --danger: #ff3b30;
+  --radius: 12px;
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+  --shadow-button: 0 1px 2px rgba(0, 0, 0, 0.08);
+  --shadow-button-hover: 0 2px 8px rgba(0, 0, 0, 0.12);
+  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.08);
+  --shadow-card-hover: 0 4px 12px rgba(0, 0, 0, 0.1);
+  --shadow-game-card: 0 2px 8px rgba(0, 0, 0, 0.06);
+  --shadow-game-card-hover: 0 6px 16px rgba(0, 0, 0, 0.1);
+  --shadow-game-card-back: 0 2px 8px rgba(0, 0, 0, 0.08);
+  --shadow-game-card-drag: 0 8px 24px rgba(0, 0, 0, 0.15);
+  --shadow-overlay: 0 12px 32px rgba(0, 0, 0, 0.12);
+  --shadow-toast: 0 4px 12px rgba(0, 0, 0, 0.15);
+  --shadow-highlight: rgba(255, 255, 255, 0.5);
+  --shadow-highlight-hover: rgba(255, 255, 255, 0.7);
+  --backdrop: blur(20px) saturate(180%);
+  --backdrop-card: blur(24px) saturate(180%);
+  --backdrop-overlay: blur(24px) saturate(180%);
+  --border-width: 0.5px;
+  --bg-slot: rgba(0, 0, 0, 0.03);
+  --bg-card-face: rgba(255, 255, 255, 0.9);
+  --bg-card-back: rgba(120, 120, 130, 0.25);
+  --border-card: rgba(0, 0, 0, 0.05);
+  --border-card-back: rgba(255, 255, 255, 0.4);
+  --color-slot: rgba(0, 0, 0, 0.15);
+  --bg-overlay: rgba(245, 245, 247, 0.7);
+  --border-overlay: rgba(255, 255, 255, 0.8);
+  --bg-toast: rgba(29, 29, 31, 0.9);
+  --ink-toast: rgba(255, 255, 255, 0.95);
+  --scroll-shadow: rgba(0, 0, 0, 0.06);
+}
+
+/* noir — 黑色电影 */
+html[data-theme="noir"] {
+  --bg-base: #0a0a0a;
+  --bg-glass: rgba(20, 20, 20, 0.85);
+  --bg-glass-hover: rgba(35, 35, 35, 0.95);
+  --bg-tag: rgba(255, 255, 255, 0.04);
+  --bg-select-option: #141414;
+  --bg-gradient: linear-gradient(180deg, #111111 0%, #0a0a0a 100%);
+  --line: rgba(255, 255, 255, 0.12);
+  --line-soft: rgba(255, 255, 255, 0.05);
+  --line-hover: rgba(255, 255, 255, 0.2);
+  --ink: #e8e8e8;
+  --ink-soft: #a0a0a0;
+  --muted: #555555;
+  --accent: #c9a96e;
+  --good: #c9a96e;
+  --danger: #8b0000;
+  --radius: 0px;
+  --radius-sm: 0px;
+  --radius-md: 0px;
+  --radius-lg: 0px;
+  --radius-xl: 0px;
+  --shadow-button: inset 0 0 0 1px rgba(255, 255, 255, 0.15);
+  --shadow-button-hover: inset 0 0 0 1px rgba(255, 255, 255, 0.3), 0 0 20px rgba(201, 169, 110, 0.1);
+  --shadow-card: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+  --shadow-card-hover: inset 0 0 0 1px rgba(255, 255, 255, 0.15), 0 0 30px rgba(0, 0, 0, 0.5);
+  --shadow-game-card: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+  --shadow-game-card-hover: inset 0 0 0 1px rgba(255, 255, 255, 0.15);
+  --shadow-game-card-back: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+  --shadow-game-card-drag: 0 8px 32px rgba(0, 0, 0, 0.6);
+  --shadow-overlay: inset 0 0 0 1px rgba(255, 255, 255, 0.1), 0 0 60px rgba(0, 0, 0, 0.5);
+  --shadow-toast: 0 4px 16px rgba(0, 0, 0, 0.5);
+  --shadow-highlight: rgba(255, 255, 255, 0.03);
+  --shadow-highlight-hover: rgba(255, 255, 255, 0.06);
+  --backdrop: none;
+  --backdrop-card: none;
+  --backdrop-overlay: none;
+  --border-width: 0px;
+  --font: "Georgia", "Times New Roman", serif;
+  --bg-slot: rgba(255, 255, 255, 0.03);
+  --bg-card-face: rgba(255, 255, 255, 0.9);
+  --bg-card-back: rgba(80, 80, 80, 0.4);
+  --border-card: rgba(255, 255, 255, 0.08);
+  --border-card-back: rgba(255, 255, 255, 0.15);
+  --color-slot: rgba(255, 255, 255, 0.15);
+  --bg-overlay: rgba(10, 10, 10, 0.95);
+  --border-overlay: rgba(255, 255, 255, 0.1);
+  --bg-toast: #000000;
+  --ink-toast: #e8e8e8;
+  --scroll-shadow: rgba(255, 255, 255, 0.05);
+}
+
+/* parchment — 羊皮纸手稿 */
+html[data-theme="parchment"] {
+  --bg-base: #e8dcc8;
+  --bg-glass: #f0e6d3;
+  --bg-glass-hover: #f5ecd8;
+  --bg-tag: rgba(139, 115, 85, 0.1);
+  --bg-select-option: #f5ecd8;
+  --bg-gradient: linear-gradient(180deg, #f0e6d3 0%, #e8dcc8 100%);
+  --line: #b8a88a;
+  --line-soft: #d4c8b0;
+  --line-hover: #9a8568;
+  --ink: #3d3229;
+  --ink-soft: #6b5a45;
+  --muted: #8a7a65;
+  --accent: #8b4513;
+  --good: #5a7d4a;
+  --danger: #a03030;
+  --radius: 2px;
+  --radius-sm: 1px;
+  --radius-md: 3px;
+  --radius-lg: 5px;
+  --radius-xl: 8px;
+  --shadow-button: 2px 2px 0 #b8a88a;
+  --shadow-button-hover: 3px 3px 0 #9a8568;
+  --shadow-card: 3px 3px 0 rgba(139, 115, 85, 0.3);
+  --shadow-card-hover: 5px 5px 0 rgba(139, 115, 85, 0.4);
+  --shadow-game-card: 2px 2px 0 rgba(139, 115, 85, 0.25);
+  --shadow-game-card-hover: 4px 4px 0 rgba(139, 115, 85, 0.35);
+  --shadow-game-card-back: 2px 2px 0 rgba(139, 115, 85, 0.3);
+  --shadow-game-card-drag: 5px 5px 0 rgba(139, 115, 85, 0.4);
+  --shadow-overlay: 4px 4px 0 rgba(139, 115, 85, 0.3);
+  --shadow-toast: 3px 3px 0 rgba(139, 115, 85, 0.4);
+  --shadow-highlight: rgba(255, 255, 255, 0.3);
+  --shadow-highlight-hover: rgba(255, 255, 255, 0.5);
+  --backdrop: none;
+  --backdrop-card: none;
+  --backdrop-overlay: none;
+  --border-width: 1px;
+  --font: "Georgia", "Times New Roman", "Songti SC", "SimSun", serif;
+  --bg-slot: #d4c8b0;
+  --bg-card-face: #f5ecd8;
+  --bg-card-back: #b8a88a;
+  --border-card: #b8a88a;
+  --border-card-back: #d4c8b0;
+  --color-slot: #9a8568;
+  --bg-overlay: rgba(232, 220, 200, 0.95);
+  --border-overlay: #b8a88a;
+  --bg-toast: #3d3229;
+  --ink-toast: #f5ecd8;
+  --scroll-shadow: rgba(139, 115, 85, 0.15);
+}
+
+/* bauhaus — 包豪斯构成 */
+html[data-theme="bauhaus"] {
+  --bg-base: #f0f0f0;
+  --bg-glass: #ffffff;
+  --bg-glass-hover: #f5f5f5;
+  --bg-tag: #e8d44d;
+  --bg-select-option: #ffffff;
+  --bg-gradient: none;
+  --line: #000000;
+  --line-soft: #e0e0e0;
+  --line-hover: #000000;
+  --ink: #000000;
+  --ink-soft: #333333;
+  --muted: #666666;
+  --accent: #e30613;
+  --good: #1d4ed8;
+  --danger: #e30613;
+  --radius: 0px;
+  --radius-sm: 0px;
+  --radius-md: 0px;
+  --radius-lg: 0px;
+  --radius-xl: 0px;
+  --shadow-button: none;
+  --shadow-button-hover: none;
+  --shadow-card: none;
+  --shadow-card-hover: none;
+  --shadow-game-card: none;
+  --shadow-game-card-hover: none;
+  --shadow-game-card-back: none;
+  --shadow-game-card-drag: none;
+  --shadow-overlay: none;
+  --shadow-toast: none;
+  --shadow-highlight: transparent;
+  --shadow-highlight-hover: transparent;
+  --backdrop: none;
+  --backdrop-card: none;
+  --backdrop-overlay: none;
+  --border-width: 2px;
+  --font: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --bg-slot: #e8d44d;
+  --bg-card-face: #ffffff;
+  --bg-card-back: #000000;
+  --border-card: #000000;
+  --border-card-back: #e30613;
+  --color-slot: #000000;
+  --bg-overlay: rgba(255, 255, 255, 0.95);
+  --border-overlay: #000000;
+  --bg-toast: #000000;
+  --ink-toast: #ffffff;
+  --scroll-shadow: rgba(0, 0, 0, 0.08);
+}
+
+/* synthwave — 合成器波 */
+html[data-theme="synthwave"] {
+  --bg-base: #0f0f23;
+  --bg-glass: rgba(20, 20, 50, 0.7);
+  --bg-glass-hover: rgba(30, 30, 70, 0.9);
+  --bg-tag: rgba(255, 0, 255, 0.1);
+  --bg-select-option: #0f0f23;
+  --bg-gradient: linear-gradient(180deg, #1a0a2e 0%, #0f0f23 50%, #050510 100%);
+  --line: #ff00ff;
+  --line-soft: rgba(255, 0, 255, 0.15);
+  --line-hover: #00ffff;
+  --ink: #f0f0f0;
+  --ink-soft: #c0c0c0;
+  --muted: #8080ff;
+  --accent: #00ffff;
+  --good: #39ff14;
+  --danger: #ff003c;
+  --radius: 2px;
+  --radius-sm: 0px;
+  --radius-md: 2px;
+  --radius-lg: 4px;
+  --radius-xl: 6px;
+  --shadow-button: 0 0 8px rgba(0, 255, 255, 0.3), inset 0 0 0 1px rgba(0, 255, 255, 0.2);
+  --shadow-button-hover: 0 0 12px rgba(0, 255, 255, 0.5), inset 0 0 0 1px rgba(0, 255, 255, 0.4);
+  --shadow-card: 0 0 12px rgba(0, 255, 255, 0.2), inset 0 0 0 1px rgba(0, 255, 255, 0.1);
+  --shadow-card-hover: 0 0 20px rgba(0, 255, 255, 0.4), inset 0 0 0 1px rgba(0, 255, 255, 0.2);
+  --shadow-game-card: 0 0 8px rgba(0, 255, 255, 0.2), inset 0 0 0 1px rgba(0, 255, 255, 0.1);
+  --shadow-game-card-hover: 0 0 12px rgba(0, 255, 255, 0.35), inset 0 0 0 1px rgba(0, 255, 255, 0.15);
+  --shadow-game-card-back: 0 0 8px rgba(255, 0, 255, 0.25);
+  --shadow-game-card-drag: 0 0 20px rgba(0, 255, 255, 0.4);
+  --shadow-overlay: 0 0 40px rgba(0, 255, 255, 0.2), inset 0 0 0 1px rgba(0, 255, 255, 0.1);
+  --shadow-toast: 0 0 12px rgba(0, 255, 255, 0.3);
+  --shadow-highlight: transparent;
+  --shadow-highlight-hover: transparent;
+  --backdrop: none;
+  --backdrop-card: none;
+  --backdrop-overlay: none;
+  --border-width: 0px;
+  --font: "Courier New", "Segoe UI", "PingFang SC", monospace;
+  --bg-slot: rgba(0, 255, 255, 0.05);
+  --bg-card-face: rgba(15, 15, 35, 0.95);
+  --bg-card-back: rgba(255, 0, 255, 0.12);
+  --border-card: #00ffff;
+  --border-card-back: #ff00ff;
+  --color-slot: #00ffff;
+  --bg-overlay: rgba(5, 5, 16, 0.92);
+  --border-overlay: #00ffff;
+  --bg-toast: rgba(5, 5, 16, 0.95);
+  --ink-toast: #f0f0f0;
+  --scroll-shadow: rgba(0, 255, 255, 0.06);
+}
+/* ========== 涓婚瀹氫箟 ========== */
+
+/* 1. glass锛堥粯璁わ級 */
+
+/* 2. 鏆楀榛戞櫠 */
 html[data-theme="dark"] {
   --bg-base: #0f0f12;
   --bg-glass: rgba(35, 35, 40, 0.6);
@@ -426,7 +956,7 @@ html[data-theme="dark"] {
   --scroll-shadow: rgba(0, 0, 0, 0.2);
 }
 
-/* 3. 扁平多彩 */
+/* 3. 鎵佸钩澶氬僵 */
 html[data-theme="flat"] {
   --bg-base: #f0f2f5;
   --bg-glass: #ffffff;
@@ -476,7 +1006,7 @@ html[data-theme="flat"] {
   --scroll-shadow: rgba(0, 0, 0, 0.06);
 }
 
-/* 4. 新拟态 */
+/* 4. 鏂版嫙鎬?*/
 html[data-theme="neumorphism"] {
   --bg-base: #e0e5ec;
   --bg-glass: #e0e5ec;
@@ -537,7 +1067,7 @@ html[data-theme="neumorphism"] {
   --scroll-shadow: rgba(163, 177, 198, 0.25);
 }
 
-/* 5. 赛博朋克 */
+/* 5. 璧涘崥鏈嬪厠 */
 html[data-theme="cyberpunk"] {
   --bg-base: #0a0a0f;
   --bg-glass: rgba(10, 10, 15, 0.85);
@@ -598,7 +1128,7 @@ html[data-theme="cyberpunk"] {
   --scroll-shadow: rgba(0, 255, 255, 0.08);
 }
 
-/* 6. 复古终端 */
+/* 6. 澶嶅彜缁堢 */
 html[data-theme="terminal"] {
   --bg-base: #0c0c0c;
   --bg-glass: #0f1f0f;
@@ -713,7 +1243,7 @@ html[data-theme="material"] {
   --scroll-shadow: rgba(60, 64, 67, 0.08);
 }
 
-/* 8. 蒸汽波 */
+/* 8. 钂告苯娉?*/
 html[data-theme="vaporwave"] {
   --bg-base: #1a0b2e;
   --bg-glass: rgba(255, 105, 180, 0.15);
@@ -775,7 +1305,7 @@ html[data-theme="vaporwave"] {
   --scroll-shadow: rgba(255, 105, 180, 0.08);
 }
 
-/* 9. 手绘温暖 */
+/* 9. 鎵嬬粯娓╂殩 */
 html[data-theme="sketch"] {
   --bg-base: #faf8f5;
   --bg-glass: #fffefb;
@@ -828,9 +1358,9 @@ html[data-theme="sketch"] {
   --scroll-shadow: rgba(139, 115, 85, 0.1);
 }
 
-/* ========== 主题特有覆盖（重做级别差异） ========== */
+/* ========== 涓婚鐗规湁瑕嗙洊锛堥噸鍋氱骇鍒樊寮傦級 ========== */
 
-/* flat — 瓷砖式列表 */
+/* flat 鈥?鐡风爾寮忓垪琛?*/
 html[data-theme="flat"] .game-grid {
   gap: 0;
   padding: 0;
@@ -867,11 +1397,16 @@ html[data-theme="flat"] .game-card:hover {
   transform: none;
   background: var(--bg-tag);
 }
+html[data-theme="flat"] .dash-stats {
+  flex: 1 1 100%;
+  margin-top: 8px;
+  padding-top: 8px;
+}
 html[data-theme="flat"] .site-header {
   border-bottom-width: 2px;
 }
 
-/* neumorphism — 胶囊与居中 */
+/* neumorphism 鈥?鑳跺泭涓庡眳涓?*/
 html[data-theme="neumorphism"] .game-card {
   text-align: center;
   padding: 36px 28px;
@@ -885,7 +1420,7 @@ html[data-theme="neumorphism"] select {
   border-radius: 999px;
 }
 
-/* cyberpunk — 角标与发光 */
+/* cyberpunk 鈥?瑙掓爣涓庡彂鍏?*/
 html[data-theme="cyberpunk"] .site-title {
   text-shadow: 0 0 12px var(--accent);
   letter-spacing: 3px;
@@ -921,7 +1456,7 @@ html[data-theme="cyberpunk"] select {
   letter-spacing: 1px;
 }
 
-/* terminal — 命令行风格 */
+/* terminal 鈥?鍛戒护琛岄鏍?*/
 html[data-theme="terminal"] .site-header {
   padding: 24px 56px 20px;
 }
@@ -954,7 +1489,7 @@ html[data-theme="terminal"] .custom-dropdown-trigger {
   text-transform: none;
 }
 
-/* material — 药丸与大卡片 */
+/* material 鈥?鑽父涓庡ぇ鍗＄墖 */
 html[data-theme="material"] .game-card {
   padding: 32px;
 }
@@ -966,7 +1501,7 @@ html[data-theme="material"] select {
   border-radius: 999px;
 }
 
-/* vaporwave — 倾斜与扫描线 */
+/* vaporwave 鈥?鍊炬枩涓庢壂鎻忕嚎 */
 html[data-theme="vaporwave"] select {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' fill='none'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%238080ff' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
 }
@@ -994,7 +1529,7 @@ html[data-theme="vaporwave"] .game-card::after {
   border-radius: inherit;
 }
 
-/* sketch — 轻微旋转 */
+/* sketch 鈥?杞诲井鏃嬭浆 */
 html[data-theme="sketch"] .game-card {
   transform: rotate(-0.5deg);
 }
@@ -1029,11 +1564,734 @@ html[data-theme="sketch"] .custom-dropdown-trigger {
 html[data-theme="sketch"] .site-header {
   border-bottom-width: var(--border-width);
 }
-html[data-theme="sketch"] .topbar {
-  border-bottom-width: var(--border-width);
+
+
+
+/* --------------------------------------------------
+   forest — 自然有机系统
+   理念：柔软、生长、呼吸、无边界的自然感
+   -------------------------------------------------- */
+
+/* --------------------------------------------------
+   ocean — 流动水波系统
+   理念：流动、透明、深邃、不断变化的海洋感
+   -------------------------------------------------- */
+
+/* --------------------------------------------------
+   sunset — 温暖光感系统
+   理念：黄昏、渐变、暖光、温柔的余晖感
+   -------------------------------------------------- */
+
+/* --------------------------------------------------
+   midnight — 深邃星空系统
+   理念：神秘、发光、深邃、闪烁的宇宙感
+   -------------------------------------------------- */
+
+/* --------------------------------------------------
+   coffee — 复古手稿系统
+   理念：纸张、墨迹、手账、温暖的阅读感
+   -------------------------------------------------- */
+
+/* --------------------------------------------------
+   sakura — 柔和浪漫系统
+   理念：花瓣、柔软、轻盈、梦幻的少女感
+   -------------------------------------------------- */
+
+/* --------------------------------------------------
+   monochrome — 工业极简系统
+   理念：冷酷、精确、无装饰、功能至上的工业感
+   -------------------------------------------------- */
+
+/* --------------------------------------------------
+   nord — 极地清爽系统
+   理念：冰冷、整洁、克制、极简的北欧感
+   -------------------------------------------------- */
+
+/* --------------------------------------------------
+   dracula — 代码编辑器系统
+   理念：暗黑、高亮、等宽、极客感的代码编辑器风格
+   -------------------------------------------------- */
+
+/* --------------------------------------------------
+   autumn — 温暖自然系统
+   理念：落叶、木质、暖棕、宁静的岁月感
+   -------------------------------------------------- */
+/* 棣栭〉绉诲姩绔€傞厤 */
+
+/* ========== 新主题覆盖规则 ========== */
+
+/* clay — 黏土拟态 */
+html[data-theme="clay"] body {
+  font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+html[data-theme="clay"] .game-card {
+  text-align: center;
+  padding: 40px 32px;
+}
+html[data-theme="clay"] .game-card .tag {
+  border-radius: 999px;
+  padding: 6px 18px;
+}
+html[data-theme="clay"] button,
+html[data-theme="clay"] select {
+  border-radius: 999px;
+  padding: 10px 24px;
+}
+html[data-theme="clay"] button:hover {
+  transform: translateY(-2px);
+}
+html[data-theme="clay"] button:active {
+  box-shadow: inset 4px 4px 8px rgba(180, 150, 130, 0.3), inset -4px -4px 8px rgba(255, 255, 255, 0.5);
+  transform: translateY(1px);
 }
 
-/* 首页移动端适配 */
+/* brutalist — 粗野主义 */
+html[data-theme="brutalist"] body {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  letter-spacing: 0.5px;
+}
+html[data-theme="brutalist"] .site-header {
+  padding: 48px 56px 32px;
+  border-bottom: 3px solid var(--line);
+}
+html[data-theme="brutalist"] .site-title {
+  font-size: 42px;
+  font-weight: 900;
+  letter-spacing: -1px;
+  text-transform: uppercase;
+}
+html[data-theme="brutalist"] .site-subtitle {
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+html[data-theme="brutalist"] .game-grid {
+  gap: 0;
+  padding: 0;
+}
+html[data-theme="brutalist"] .game-card {
+  border-radius: 0;
+  border: none;
+  border-bottom: 3px solid var(--line);
+  padding: 32px 56px;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 24px;
+  box-shadow: none;
+}
+html[data-theme="brutalist"] .game-card:hover {
+  transform: none;
+  background: var(--ink);
+  color: var(--bg-base);
+}
+html[data-theme="brutalist"] .game-card:hover .name,
+html[data-theme="brutalist"] .game-card:hover .desc,
+html[data-theme="brutalist"] .game-card:hover .tag {
+  color: var(--bg-base);
+}
+html[data-theme="brutalist"] .game-card .name {
+  font-size: 22px;
+  font-weight: 900;
+  letter-spacing: -0.5px;
+  flex: 0 0 auto;
+}
+html[data-theme="brutalist"] .game-card .desc {
+  margin-top: 0;
+  flex: 1 1 auto;
+  font-weight: 500;
+}
+html[data-theme="brutalist"] .game-card .tag {
+  margin-top: 0;
+  border-radius: 0;
+  border: 3px solid var(--line);
+  background: var(--ink);
+  color: var(--bg-base);
+  padding: 4px 12px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+html[data-theme="brutalist"] .dash-stats {
+  flex: 1 1 100%;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 2px dashed var(--line);
+}
+html[data-theme="brutalist"] button,
+html[data-theme="brutalist"] select {
+  border-radius: 0;
+  border: 3px solid var(--line);
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 10px 20px;
+  box-shadow: 4px 4px 0 var(--line);
+}
+html[data-theme="brutalist"] button:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 var(--line);
+}
+html[data-theme="brutalist"] button:active {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0 var(--line);
+}
+
+/* pixel — 像素艺术 */
+html[data-theme="pixel"] body {
+  font-family: var(--font);
+  image-rendering: pixelated;
+}
+html[data-theme="pixel"] .site-title {
+  font-size: 24px;
+  letter-spacing: 2px;
+  text-shadow: 2px 2px 0 rgba(0, 255, 136, 0.3);
+}
+html[data-theme="pixel"] .game-grid {
+  gap: 16px;
+  padding: 32px 56px 64px;
+}
+html[data-theme="pixel"] .game-card {
+  border-radius: 0;
+  border: 2px solid var(--line);
+  padding: 24px;
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.5);
+  transition: transform 0.1s step-end, box-shadow 0.1s step-end;
+}
+html[data-theme="pixel"] .game-card:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.5);
+  border-color: var(--accent);
+}
+html[data-theme="pixel"] .game-card:active {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.5);
+}
+html[data-theme="pixel"] .game-card .name {
+  font-size: 14px;
+  letter-spacing: 1px;
+}
+html[data-theme="pixel"] .game-card .desc {
+  font-size: 11px;
+  line-height: 1.8;
+}
+html[data-theme="pixel"] .game-card .tag {
+  border-radius: 0;
+  border: 2px solid var(--line);
+  background: transparent;
+  font-size: 10px;
+  letter-spacing: 1px;
+  padding: 2px 8px;
+}
+html[data-theme="pixel"] button,
+html[data-theme="pixel"] select {
+  border-radius: 0;
+  font-family: inherit;
+  font-size: 11px;
+  letter-spacing: 1px;
+  padding: 8px 16px;
+  text-transform: uppercase;
+}
+
+/* editorial — 杂志编辑 */
+html[data-theme="editorial"] body {
+  font-family: var(--font);
+}
+html[data-theme="editorial"] .site-header {
+  padding: 80px 56px 40px;
+  border-bottom: none;
+  text-align: center;
+}
+html[data-theme="editorial"] .header-row {
+  justify-content: center;
+}
+html[data-theme="editorial"] .site-title {
+  font-size: 40px;
+  font-weight: 400;
+  letter-spacing: 2px;
+  font-style: italic;
+}
+html[data-theme="editorial"] .site-subtitle {
+  margin-top: 16px;
+  font-style: italic;
+  letter-spacing: 1px;
+  color: var(--muted);
+}
+html[data-theme="editorial"] .theme-switcher {
+  position: absolute;
+  top: 24px;
+  right: 56px;
+}
+html[data-theme="editorial"] .game-grid {
+  gap: 40px;
+  padding: 48px 72px 80px;
+}
+html[data-theme="editorial"] .game-card {
+  border-radius: var(--radius-lg);
+  padding: 36px 32px;
+  text-align: left;
+}
+html[data-theme="editorial"] .game-card .name {
+  font-size: 22px;
+  font-weight: 400;
+  letter-spacing: 1px;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 12px;
+  margin-bottom: 4px;
+}
+html[data-theme="editorial"] .game-card .desc {
+  line-height: 1.9;
+  font-size: 14px;
+  margin-top: 16px;
+}
+html[data-theme="editorial"] .game-card .tag {
+  border: 1px solid var(--line);
+  background: transparent;
+  font-style: italic;
+  letter-spacing: 1px;
+  padding: 4px 12px;
+}
+html[data-theme="editorial"] button,
+html[data-theme="editorial"] select {
+  border-radius: var(--radius);
+  border: 1px solid var(--line);
+  font-family: inherit;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  padding: 8px 20px;
+}
+
+/* swiss — 瑞士现代主义 */
+html[data-theme="swiss"] body {
+  font-family: var(--font);
+}
+html[data-theme="swiss"] .site-header {
+  padding: 56px 56px 32px;
+  border-bottom: 1px solid var(--line);
+}
+html[data-theme="swiss"] .site-title {
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: -1px;
+}
+html[data-theme="swiss"] .site-subtitle {
+  font-weight: 400;
+  letter-spacing: 0.5px;
+}
+html[data-theme="swiss"] .game-grid {
+  gap: 1px;
+  padding: 0;
+  background: var(--line);
+}
+html[data-theme="swiss"] .game-card {
+  border-radius: 0;
+  border: none;
+  padding: 32px 56px;
+  background: var(--bg-base);
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 24px;
+  box-shadow: none;
+  transition: background 0.15s ease, padding-left 0.2s ease;
+}
+html[data-theme="swiss"] .game-card:hover {
+  transform: none;
+  background: var(--ink);
+  color: var(--bg-base);
+  padding-left: 64px;
+}
+html[data-theme="swiss"] .game-card:hover .name,
+html[data-theme="swiss"] .game-card:hover .desc,
+html[data-theme="swiss"] .game-card:hover .tag {
+  color: var(--bg-base);
+}
+html[data-theme="swiss"] .game-card .name {
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  flex: 0 0 auto;
+}
+html[data-theme="swiss"] .game-card .desc {
+  margin-top: 0;
+  flex: 1 1 auto;
+  font-weight: 400;
+}
+html[data-theme="swiss"] .game-card .tag {
+  margin-top: 0;
+  border-radius: 0;
+  border: 1px solid currentColor;
+  background: transparent;
+  padding: 2px 8px;
+  font-size: 10px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+html[data-theme="swiss"] .dash-stats {
+  flex: 1 1 100%;
+  margin-top: 6px;
+  padding-top: 6px;
+}
+html[data-theme="swiss"] button,
+html[data-theme="swiss"] select {
+  border-radius: 0;
+  border: 1px solid var(--line);
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  font-size: 11px;
+  padding: 8px 16px;
+  box-shadow: none;
+}
+html[data-theme="swiss"] button:hover {
+  background: var(--accent);
+  color: #ffffff;
+  border-color: var(--accent);
+}
+
+/* bento — 便当盒网格 */
+html[data-theme="bento"] body {
+  font-family: -apple-system, "SF Pro Display", "PingFang SC", sans-serif;
+}
+html[data-theme="bento"] .site-header {
+  padding: 64px 56px 32px;
+}
+html[data-theme="bento"] .site-title {
+  font-weight: 600;
+  letter-spacing: -0.5px;
+}
+html[data-theme="bento"] .game-grid {
+  gap: 16px;
+  padding: 32px 56px 64px;
+}
+html[data-theme="bento"] .game-card {
+  border-radius: var(--radius-lg);
+  padding: 28px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+html[data-theme="bento"] .game-card:hover {
+  transform: translateY(-4px) scale(1.01);
+}
+html[data-theme="bento"] .game-card .name {
+  font-weight: 600;
+  letter-spacing: -0.3px;
+}
+html[data-theme="bento"] .game-card .tag {
+  border-radius: 999px;
+  border: none;
+  padding: 4px 12px;
+  font-size: 11px;
+  font-weight: 500;
+}
+html[data-theme="bento"] button,
+html[data-theme="bento"] select {
+  border-radius: var(--radius);
+  font-weight: 500;
+  font-size: 12px;
+  padding: 8px 18px;
+}
+
+/* noir — 黑色电影 */
+html[data-theme="noir"] body {
+  font-family: var(--font);
+}
+html[data-theme="noir"] .site-header {
+  padding: 64px 56px 32px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  text-align: center;
+}
+html[data-theme="noir"] .header-row {
+  justify-content: center;
+}
+html[data-theme="noir"] .site-title {
+  font-size: 36px;
+  font-weight: 400;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  font-style: italic;
+}
+html[data-theme="noir"] .site-subtitle {
+  margin-top: 12px;
+  font-style: italic;
+  letter-spacing: 2px;
+  font-size: 13px;
+}
+html[data-theme="noir"] .theme-switcher {
+  position: absolute;
+  top: 24px;
+  right: 56px;
+}
+html[data-theme="noir"] .game-grid {
+  gap: 1px;
+  padding: 0;
+  background: rgba(255, 255, 255, 0.05);
+}
+html[data-theme="noir"] .game-card {
+  border-radius: 0;
+  border: none;
+  padding: 32px 56px;
+  background: var(--bg-base);
+  box-shadow: none;
+  transition: background 0.3s ease;
+}
+html[data-theme="noir"] .game-card:hover {
+  transform: none;
+  background: rgba(255, 255, 255, 0.03);
+}
+html[data-theme="noir"] .game-card .name {
+  font-size: 18px;
+  font-weight: 400;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+html[data-theme="noir"] .game-card .desc {
+  font-style: italic;
+  line-height: 1.8;
+  color: var(--muted);
+}
+html[data-theme="noir"] .game-card .tag {
+  border-radius: 0;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: transparent;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-size: 10px;
+  padding: 3px 10px;
+}
+html[data-theme="noir"] button,
+html[data-theme="noir"] select {
+  border-radius: 0;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  font-family: inherit;
+  font-style: italic;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  font-size: 11px;
+  padding: 8px 20px;
+  transition: all 0.3s ease;
+}
+html[data-theme="noir"] button:hover {
+  border-color: var(--accent);
+  box-shadow: 0 0 20px rgba(201, 169, 110, 0.1);
+}
+
+/* parchment — 羊皮纸手稿 */
+html[data-theme="parchment"] body {
+  font-family: var(--font);
+  background-image:
+    repeating-linear-gradient(0deg, transparent, transparent 35px, rgba(139, 115, 85, 0.03) 35px, rgba(139, 115, 85, 0.03) 36px),
+    var(--bg-gradient);
+}
+html[data-theme="parchment"] .site-header {
+  padding: 64px 56px 32px;
+  border-bottom: 2px double var(--line);
+}
+html[data-theme="parchment"] .site-title {
+  font-size: 34px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+html[data-theme="parchment"] .site-subtitle {
+  font-style: italic;
+  letter-spacing: 0.5px;
+}
+html[data-theme="parchment"] .game-grid {
+  gap: 20px;
+  padding: 36px 56px 72px;
+}
+html[data-theme="parchment"] .game-card {
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--line);
+  padding: 26px 24px 22px;
+  box-shadow: 2px 2px 0 rgba(139, 115, 85, 0.2);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+html[data-theme="parchment"] .game-card:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0 rgba(139, 115, 85, 0.3);
+}
+html[data-theme="parchment"] .game-card:active {
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0 rgba(139, 115, 85, 0.15);
+}
+html[data-theme="parchment"] .game-card .name {
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  border-bottom: 1px solid var(--line-soft);
+  padding-bottom: 8px;
+}
+html[data-theme="parchment"] .game-card .desc {
+  line-height: 1.75;
+  font-size: 13.5px;
+}
+html[data-theme="parchment"] .game-card .tag {
+  border: 1px solid var(--line);
+  background: transparent;
+  font-style: italic;
+  letter-spacing: 0.8px;
+}
+html[data-theme="parchment"] button,
+html[data-theme="parchment"] select {
+  border-radius: var(--radius);
+  border: 1px solid var(--line);
+  font-family: inherit;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  box-shadow: 2px 2px 0 rgba(139, 115, 85, 0.2);
+}
+html[data-theme="parchment"] button:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0 rgba(139, 115, 85, 0.3);
+}
+html[data-theme="parchment"] button:active {
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0 rgba(139, 115, 85, 0.15);
+}
+
+/* bauhaus — 包豪斯构成 */
+html[data-theme="bauhaus"] body {
+  font-family: var(--font);
+}
+html[data-theme="bauhaus"] .site-header {
+  padding: 48px 56px 32px;
+  border-bottom: 2px solid var(--line);
+}
+html[data-theme="bauhaus"] .site-title {
+  font-size: 36px;
+  font-weight: 700;
+  letter-spacing: -1px;
+}
+html[data-theme="bauhaus"] .game-grid {
+  gap: 16px;
+  padding: 32px 56px 64px;
+}
+html[data-theme="bauhaus"] .game-card {
+  border-radius: 0;
+  border: 2px solid var(--line);
+  padding: 24px;
+  position: relative;
+  box-shadow: none;
+  transition: transform 0.2s ease;
+}
+html[data-theme="bauhaus"] .game-card::before {
+  content: "";
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 12px;
+  height: 12px;
+  background: var(--accent);
+}
+html[data-theme="bauhaus"] .game-card:nth-child(2n)::before {
+  background: #1d4ed8;
+}
+html[data-theme="bauhaus"] .game-card:nth-child(3n)::before {
+  background: #e8d44d;
+}
+html[data-theme="bauhaus"] .game-card:hover {
+  transform: translate(-3px, -3px);
+  box-shadow: 6px 6px 0 var(--line);
+}
+html[data-theme="bauhaus"] .game-card .name {
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+html[data-theme="bauhaus"] .game-card .tag {
+  border-radius: 0;
+  border: 2px solid var(--line);
+  background: var(--accent);
+  color: #ffffff;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 10px;
+  padding: 2px 8px;
+}
+html[data-theme="bauhaus"] button,
+html[data-theme="bauhaus"] select {
+  border-radius: 0;
+  border: 2px solid var(--line);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 11px;
+  padding: 8px 16px;
+  box-shadow: none;
+}
+html[data-theme="bauhaus"] button:hover {
+  background: var(--accent);
+  color: #ffffff;
+}
+
+/* synthwave — 合成器波 */
+html[data-theme="synthwave"] body {
+  font-family: var(--font);
+}
+html[data-theme="synthwave"] .site-title {
+  font-size: 28px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  text-shadow: 0 0 20px rgba(0, 255, 255, 0.3), 2px 2px 0 rgba(255, 0, 255, 0.3);
+}
+html[data-theme="synthwave"] .game-grid {
+  gap: 16px;
+  padding: 32px 56px 64px;
+}
+html[data-theme="synthwave"] .game-card {
+  border-radius: var(--radius-lg);
+  border: 1px solid rgba(0, 255, 255, 0.15);
+  padding: 24px;
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+html[data-theme="synthwave"] .game-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 255, 255, 0.03) 2px,
+    rgba(0, 255, 255, 0.03) 4px
+  );
+  pointer-events: none;
+  border-radius: inherit;
+}
+html[data-theme="synthwave"] .game-card:hover {
+  border-color: rgba(0, 255, 255, 0.35);
+  box-shadow: 0 0 20px rgba(0, 255, 255, 0.1);
+}
+html[data-theme="synthwave"] .game-card .name {
+  font-size: 16px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+html[data-theme="synthwave"] .game-card .tag {
+  border-radius: 0;
+  border: 1px solid rgba(0, 255, 255, 0.25);
+  background: rgba(0, 255, 255, 0.05);
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+html[data-theme="synthwave"] button,
+html[data-theme="synthwave"] select {
+  border-radius: var(--radius);
+  border: 1px solid rgba(0, 255, 255, 0.25);
+  font-family: inherit;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  font-size: 11px;
+  padding: 8px 16px;
+  transition: all 0.2s ease;
+}
+html[data-theme="synthwave"] button:hover {
+  border-color: rgba(0, 255, 255, 0.5);
+  box-shadow: 0 0 15px rgba(0, 255, 255, 0.2);
+}
 @media (max-width: 760px) {
   .site-header {
     padding: 40px 24px 24px;
@@ -1066,5 +2324,14 @@ html[data-theme="sketch"] .topbar {
   }
   .game-card .name {
     font-size: 16px;
+  }
+  html[data-theme="sketch"] .game-card,
+  html[data-theme="sketch"] .game-card:nth-child(even),
+  html[data-theme="sketch"] button,
+  html[data-theme="sketch"] select {
+    transform: none;
+  }
+  html[data-theme="flat"] .game-card {
+    padding: 16px 18px;
   }
 }

@@ -4,7 +4,9 @@
 
 const FACE_OFFSET = 28;
 const BACK_OFFSET = 6;
-const CARD_H = parseInt(getComputedStyle(document.documentElement).getPropertyValue("--card-h"), 10) || 112;
+function getCardH() {
+  return parseInt(getComputedStyle(document.documentElement).getPropertyValue("--card-h"), 10) || 112;
+}
 const HISTORY_LIMIT = 200;
 const DEAL_FLY_MS = 320;       // 单张飞行时长
 const DEAL_STAGGER_MS = 55;    // 每张错开出发的间隔
@@ -15,8 +17,19 @@ let gameStartTime = 0;
 let gameTimerInterval = null;
 let hintTimer = null;
 
-const STATS_KEY = "spider_stats_v1";
-const SAVE_KEY = "spider_save_v1";
+const STATS_KEY = "game_spider_stats_v1";
+const SAVE_KEY = "game_spider_save_v1";
+
+function migrateLegacyKeys() {
+  const oldStats = localStorage.getItem("spider_stats_v1");
+  if (oldStats && !localStorage.getItem(STATS_KEY)) {
+    localStorage.setItem(STATS_KEY, oldStats);
+  }
+  const oldSave = localStorage.getItem("spider_save_v1");
+  if (oldSave && !localStorage.getItem(SAVE_KEY)) {
+    localStorage.setItem(SAVE_KEY, oldSave);
+  }
+}
 
 function saveGame() {
   if (!state) return;
@@ -29,7 +42,7 @@ function saveGame() {
       foundation: state.foundation,
       score: state.score,
       moves: state.moves,
-      // 历史快照体积可能高达数百 KB,且重启后撤销链已无意义,故不入盘
+      history: state.history.slice(-50), // 保留最近 50 步以控制体积
       elapsedMs: getElapsedMs(),
       savedAt: Date.now(),
     })
@@ -48,7 +61,7 @@ function loadGame() {
       foundation: data.foundation ?? 0,
       score: data.score ?? 500,
       moves: data.moves ?? 0,
-      history: [],
+      history: Array.isArray(data.history) ? data.history : [],
       drag: null,
       isDealing: false,
     };
@@ -140,6 +153,47 @@ async function findSolvableDealParallel(suitsCount, maxAttempts = 128) {
       resolve(result);
     }
 
+    const WORKER_TIMEOUT = 5000; // 单个 Worker 5 秒超时
+    const workerTimers = new Map();
+
+    function clearWorkerTimer(worker) {
+      const t = workerTimers.get(worker);
+      if (t) { clearTimeout(t); workerTimers.delete(worker); }
+    }
+    function setWorkerTimer(worker) {
+      clearWorkerTimer(worker);
+      workerTimers.set(worker, setTimeout(() => {
+        try { worker.terminate(); } catch {}
+        if (found) return;
+        activeWorkers--;
+        if (activeWorkers <= 0) finish(null);
+        else if (deals.length > 0) spawnWorker();
+      }, WORKER_TIMEOUT));
+    }
+    function spawnWorker() {
+      let w;
+      try { w = new Worker("solver-worker.js"); } catch { return; }
+      workers.push(w);
+      activeWorkers++;
+      w.onmessage = (ev) => {
+        clearWorkerTimer(w);
+        onResult(ev.data, w);
+      };
+      w.onerror = () => {
+        clearWorkerTimer(w);
+        if (found) return;
+        completed++;
+        updateLoadingProgress(completed, maxAttempts);
+        activeWorkers--;
+        if (activeWorkers <= 0) finish(null);
+        else if (deals.length > 0) spawnWorker();
+      };
+      if (deals.length > 0) {
+        w.postMessage({ deal: deals.pop() });
+        setWorkerTimer(w);
+      }
+    }
+
     function onResult(result, worker) {
       if (found) return;
       completed++;
@@ -154,6 +208,7 @@ async function findSolvableDealParallel(suitsCount, maxAttempts = 128) {
       }
       if (deals.length > 0) {
         worker.postMessage({ deal: deals.pop() });
+        setWorkerTimer(worker);
       } else {
         activeWorkers--;
         if (activeWorkers <= 0) {
@@ -163,48 +218,7 @@ async function findSolvableDealParallel(suitsCount, maxAttempts = 128) {
     }
 
     for (let i = 0; i < Math.min(WORKER_COUNT, maxAttempts); i++) {
-      let worker;
-      try {
-        worker = new Worker("solver-worker.js");
-      } catch {
-        continue;
-      }
-      workers.push(worker);
-      activeWorkers++;
-
-      worker.onmessage = (e) => {
-        onResult(e.data, worker);
-      };
-
-      worker.onerror = () => {
-        if (found) return;
-        completed++;
-        updateLoadingProgress(completed, maxAttempts);
-        activeWorkers--;
-        if (activeWorkers <= 0) {
-          finish(null);
-          return;
-        }
-        if (deals.length > 0) {
-          try {
-            const w2 = new Worker("solver-worker.js");
-            workers.push(w2);
-            activeWorkers++;
-            w2.onmessage = (ev) => onResult(ev.data, w2);
-            w2.onerror = worker.onerror;
-            w2.postMessage({ deal: deals.pop() });
-          } catch {
-            activeWorkers--;
-            if (activeWorkers <= 0) {
-              finish(null);
-            }
-          }
-        }
-      };
-
-      if (deals.length > 0) {
-        worker.postMessage({ deal: deals.pop() });
-      }
+      if (deals.length > 0) spawnWorker();
     }
 
     if (activeWorkers === 0) {
@@ -239,11 +253,30 @@ async function findSolvableDealSerial(suitsCount, deals, timeLimit = 15000) {
   return null;
 }
 
+function defaultStats() {
+  return { version: 2, started: 0, won: 0, sessions: [] };
+}
+
 function loadStats() {
   try {
-    return JSON.parse(localStorage.getItem(STATS_KEY)) || {};
+    const raw = localStorage.getItem(STATS_KEY);
+    if (!raw) return defaultStats();
+    const stats = JSON.parse(raw);
+    if (stats && typeof stats.version === 'number') return stats;
+
+    // Migrate old format: {"1": {...}, "2": {...}, "4": {...}}
+    const migrated = defaultStats();
+    for (const key of ['1', '2', '4']) {
+      if (stats[key]) {
+        migrated.started += stats[key].started || 0;
+        migrated.won += stats[key].won || 0;
+        migrated[key] = stats[key];
+      }
+    }
+    saveStats(migrated);
+    return migrated;
   } catch {
-    return {};
+    return defaultStats();
   }
 }
 function saveStats(stats) {
@@ -258,6 +291,7 @@ function getStatsEntry(stats, suits) {
 }
 function recordStart(suits) {
   const stats = loadStats();
+  stats.started = (stats.started || 0) + 1;
   const e = getStatsEntry(stats, suits);
   e.started++;
   saveStats(stats);
@@ -265,12 +299,17 @@ function recordStart(suits) {
 }
 function recordWin(suits, score, moves) {
   const stats = loadStats();
+  stats.won = (stats.won || 0) + 1;
+  const timeMs = Date.now() - gameStartTime;
+  if (!Array.isArray(stats.sessions)) stats.sessions = [];
+  stats.sessions.push({ suits, score, moves, timeMs, date: Date.now() });
+
   const e = getStatsEntry(stats, suits);
   e.won++;
-  const timeMs = Date.now() - gameStartTime;
   if (e.bestScore == null || score > e.bestScore) e.bestScore = score;
   if (e.bestMoves == null || moves < e.bestMoves) e.bestMoves = moves;
   if (e.bestTimeMs == null || timeMs < e.bestTimeMs) e.bestTimeMs = timeMs;
+
   saveStats(stats);
   return e;
 }
@@ -660,14 +699,14 @@ function render() {
   $("stat-score").textContent = state.score;
   $("stat-moves").textContent = state.moves;
   $("stat-done").textContent = state.foundation;
-  $("btn-undo").disabled = state.history.length === 0 || state.isDealing;
+  $("btn-undo").disabled = state.history.length === 0 || state.isDealing || state.drag;
 
   // foundation
   foundationEl.innerHTML = "";
   for (let i = 0; i < 8; i++) {
     const slot = document.createElement("div");
     slot.className = "found-slot" + (i < state.foundation ? " filled" : "");
-    if (i < state.foundation) slot.textContent = "★";
+    if (i < state.foundation) slot.textContent = "OK";
     foundationEl.appendChild(slot);
   }
 
@@ -695,7 +734,8 @@ function render() {
       colEl.appendChild(cardEl);
       y += card.faceUp ? FACE_OFFSET : BACK_OFFSET;
     }
-    colEl.style.minHeight = Math.max(CARD_H, y + CARD_H) + "px";
+    const cardH = getCardH();
+    colEl.style.minHeight = Math.max(cardH, y + cardH) + "px";
     tableauEl.appendChild(colEl);
   }
 }
@@ -923,7 +963,10 @@ function hideLoading() {
 }
 
 let confirmResolve = null;
+let confirmOpen = false;
 function showConfirm(message, confirmText = "确认", cancelText = "取消") {
+  if (confirmOpen) return Promise.resolve(false);
+  confirmOpen = true;
   return new Promise((resolve) => {
     confirmResolve = resolve;
     $("confirm-message").textContent = message;
@@ -932,28 +975,13 @@ function showConfirm(message, confirmText = "确认", cancelText = "取消") {
     $("confirm-overlay").hidden = false;
   });
 }
-function hideConfirm() {
+function hideConfirm(result = false) {
+  if (confirmResolve) { confirmResolve(result); confirmResolve = null; }
+  confirmOpen = false;
   $("confirm-overlay").hidden = true;
-  confirmResolve = null;
 }
 
-function launchConfetti() {
-  const colors = ['#ff3b30', '#ff9500', '#ffcc00', '#4cd964', '#5ac8fa', '#007aff', '#5856d6', '#ff2d55'];
-  const count = 80;
-  for (let i = 0; i < count; i++) {
-    const el = document.createElement('div');
-    el.className = 'confetti-piece';
-    el.style.left = (Math.random() * 100) + 'vw';
-    el.style.background = colors[Math.floor(Math.random() * colors.length)];
-    el.style.width = (4 + Math.random() * 8) + 'px';
-    el.style.height = (4 + Math.random() * 8) + 'px';
-    el.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
-    el.style.animationDuration = (2 + Math.random() * 1.5) + 's';
-    el.style.animationDelay = (Math.random() * 0.5) + 's';
-    document.body.appendChild(el);
-    setTimeout(() => { if (el.parentNode) el.parentNode.removeChild(el); }, 4000);
-  }
-}
+/* confetti shared: scripts/confetti.js */
 
 function showWin() {
   stopGameTimer();
@@ -994,6 +1022,10 @@ function renderWinStats(entry) {
 
 function onKeyDown(e) {
   if (e.key === "Escape") {
+    if (!$("confirm-overlay").hidden) {
+      hideConfirm(false);
+      return;
+    }
     if (!$("help-overlay").hidden) {
       hideHelpOverlay();
       return;
@@ -1011,7 +1043,7 @@ function onKeyDown(e) {
   switch (e.key.toLowerCase()) {
     case "n":
       if (state && (state.drag || state.isDealing)) return;
-      newGame(parseInt($("difficulty").value, 10));
+      confirmNewGame().then((ok) => { if (ok) newGame(parseInt($("difficulty").value, 10)); });
       break;
     case "d":
       dealNext();
@@ -1184,55 +1216,6 @@ async function confirmNewGame() {
   return await showConfirm("当前游戏未结束，是否开始新游戏？", "开始新游戏", "取消");
 }
 
-function initCustomSelect(selectEl) {
-  if (!selectEl) return;
-  selectEl.style.display = "none";
-
-  const wrapper = document.createElement("div");
-  wrapper.className = "custom-select";
-
-  const trigger = document.createElement("div");
-  trigger.className = "select-trigger";
-
-  const dropdown = document.createElement("div");
-  dropdown.className = "select-dropdown";
-
-  function sync() {
-    trigger.textContent = selectEl.options[selectEl.selectedIndex]?.text || "";
-    dropdown.querySelectorAll(".select-option").forEach((o) => {
-      o.classList.toggle("active", o.dataset.value === selectEl.value);
-    });
-  }
-
-  for (const opt of selectEl.options) {
-    const item = document.createElement("div");
-    item.className = "select-option";
-    item.textContent = opt.text;
-    item.dataset.value = opt.value;
-    item.addEventListener("click", () => {
-      selectEl.value = opt.value;
-      selectEl.dispatchEvent(new Event("change", { bubbles: true }));
-      wrapper.classList.remove("open");
-      sync();
-    });
-    dropdown.appendChild(item);
-  }
-
-  trigger.addEventListener("click", (e) => {
-    e.stopPropagation();
-    const isOpen = wrapper.classList.contains("open");
-    document.querySelectorAll(".custom-select.open").forEach((el) => el.classList.remove("open"));
-    if (!isOpen) wrapper.classList.add("open");
-  });
-
-  wrapper.appendChild(trigger);
-  wrapper.appendChild(dropdown);
-  selectEl.parentNode.insertBefore(wrapper, selectEl.nextSibling);
-
-  sync();
-  selectEl._customSync = sync;
-}
-
 function bind() {
   $("btn-new").addEventListener("click", async () => {
     if (isLoading()) return;
@@ -1246,17 +1229,14 @@ function bind() {
   $("difficulty").addEventListener("change", async (e) => {
     if (isLoading()) {
       e.target.value = String(state.suits);
-      if (e.target._customSync) e.target._customSync();
       return;
     }
     if (state && (state.drag || state.isDealing)) {
       e.target.value = String(state.suits);
-      if (e.target._customSync) e.target._customSync();
       return;
     }
     if (!await confirmNewGame()) {
       e.target.value = String(state.suits);
-      if (e.target._customSync) e.target._customSync();
       return;
     }
     const ensure = $("ensure-solvable")?.checked ?? false;
@@ -1286,13 +1266,14 @@ function bind() {
     hideConfirm();
   });
 
-  initCustomSelect($("difficulty"));
+  if (typeof window.buildCustomDropdown === "function") window.buildCustomDropdown($("difficulty"));
 
   document.addEventListener("click", () => {
     document.querySelectorAll(".custom-select.open").forEach((el) => el.classList.remove("open"));
   });
 }
 
+migrateLegacyKeys();
 bind();
 if (!loadGame()) {
   newGame(parseInt($("difficulty").value, 10));

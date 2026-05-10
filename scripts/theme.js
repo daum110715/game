@@ -2,12 +2,13 @@
   var THEME_KEY = 'theme'
   var DEFAULT_THEME = 'sketch'
 
+  var VALID_THEMES = ['dark','flat','neumorphism','cyberpunk','terminal','material','vaporwave','sketch','clay','brutalist','pixel','editorial','swiss','bento','noir','parchment','bauhaus','synthwave']
   function getSavedTheme() {
     try {
       var raw = localStorage.getItem(THEME_KEY)
       if (raw) {
         if (raw === 'default' || raw === 'glass') return DEFAULT_THEME
-        return raw
+        if (VALID_THEMES.indexOf(raw) >= 0) return raw
       }
     } catch (e) {}
     return DEFAULT_THEME
@@ -24,12 +25,18 @@
     var trigger = document.createElement('button')
     trigger.type = 'button'
     trigger.className = 'custom-dropdown-trigger'
+    trigger.setAttribute('aria-haspopup', 'listbox')
+    trigger.setAttribute('aria-expanded', 'false')
+    trigger.setAttribute('aria-controls', listId)
     trigger.textContent = select.options[select.selectedIndex]
       ? select.options[select.selectedIndex].text
       : ''
 
+    var listId = 'custom-dropdown-list-' + Math.random().toString(36).slice(2, 8)
     var list = document.createElement('div')
+    list.id = listId
     list.className = 'custom-dropdown-list'
+    list.setAttribute('role', 'listbox')
     list.hidden = true
 
     options.forEach(function(opt) {
@@ -47,13 +54,17 @@
     select.style.display = 'none'
     select.parentNode.insertBefore(wrapper, select)
 
+    var closeTimer = null
     function close() {
       list.classList.remove('is-open')
       trigger.classList.remove('is-open')
-      setTimeout(function() { list.hidden = true }, 180)
+      if (closeTimer) clearTimeout(closeTimer)
+      closeTimer = setTimeout(function() { list.hidden = true; closeTimer = null }, 180)
     }
 
     function open() {
+      if (closeTimer) { clearTimeout(closeTimer); closeTimer = null }
+      trigger.setAttribute('aria-expanded', 'true')
       list.hidden = false
       requestAnimationFrame(function() {
         list.classList.add('is-open')
@@ -68,9 +79,11 @@
       trigger.textContent = select.options[select.selectedIndex].text
       var items = list.querySelectorAll('.custom-dropdown-item')
       for (var i = 0; i < items.length; i++) {
-        items[i].classList.toggle('is-active', items[i].dataset.value === value)
+        var active = items[i].dataset.value === value
+        items[i].classList.toggle('is-active', active)
+        items[i].setAttribute('aria-selected', active ? 'true' : 'false')
       }
-      select.dispatchEvent(new Event('change'))
+      select.dispatchEvent(new Event('change', { bubbles: true }))
       close()
     }
 
@@ -101,9 +114,9 @@
         open()
       } else if (e.key === 'Enter' || e.key === ' ') {
         e.preventDefault()
-        if (list.hidden) open(); else close()
+        if (list.hidden) open(); else { close(); trigger.focus() }
       } else if (e.key === 'Escape') {
-        close()
+        if (!list.hidden) { e.preventDefault(); close(); trigger.focus() }
       }
     })
 

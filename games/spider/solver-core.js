@@ -1,6 +1,6 @@
 // 求解器核心 + 牌组生成（供主线程和 Web Worker 共享）
 
-const SUITS = ["♠", "♥", "♦", "♣"];
+const SUITS = ["黑桃", "红桃", "方块", "梅花"];
 const RANKS = ["", "A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"];
 
 function buildDeck(suitsCount) {

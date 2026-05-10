@@ -1,11 +1,10 @@
-/* ===== 蜘蛛纸牌 ===== */
+/* ===== FreeCell 空当接龙 ===== */
 
 :root {
-  --card-w: 80px;
-  --card-h: 112px;
-  --col-gap: 12px;
-  --face-offset: 28px;
-  --back-offset: 6px;
+  --card-w: 72px;
+  --card-h: 100px;
+  --col-gap: 10px;
+  --face-offset: 22px;
   --suit-spade: #1a1a1a;
   --suit-heart: #c5384a;
   --suit-diamond: #c5384a;
@@ -78,8 +77,8 @@ body {
 
 /* ----- 主区 ----- */
 .board {
-  padding: 40px 28px 80px;
-  max-width: 1100px;
+  padding: 36px 20px 80px;
+  max-width: 860px;
   margin: 0 auto;
 }
 .board-top {
@@ -90,10 +89,42 @@ body {
   min-height: var(--card-h);
 }
 
+/* freecells */
+.freecells {
+  display: grid;
+  grid-template-columns: repeat(4, var(--card-w));
+  gap: 10px;
+}
+.cell-slot {
+  width: var(--card-w);
+  height: var(--card-h);
+  border-radius: var(--radius-md);
+  background: var(--bg-slot);
+  border: var(--border-width) var(--border-style) var(--line);
+  backdrop-filter: var(--backdrop-card);
+  -webkit-backdrop-filter: var(--backdrop-card);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  color: var(--color-slot);
+  transition: background 0.25s, border-color 0.25s, color 0.25s;
+  position: relative;
+}
+.cell-slot .card {
+  position: absolute;
+  inset: 0;
+}
+.cell-slot.drop-hint {
+  background: rgba(91, 109, 138, 0.12);
+  border-color: var(--accent);
+  box-shadow: inset 0 0 0 1.5px var(--accent), 0 0 12px rgba(91,109,138,0.12);
+}
+
 /* foundation */
 .foundation {
   display: grid;
-  grid-template-columns: repeat(8, var(--card-w));
+  grid-template-columns: repeat(4, var(--card-w));
   gap: 10px;
 }
 .found-slot {
@@ -110,75 +141,25 @@ body {
   font-size: 22px;
   color: var(--color-slot);
   transition: background 0.25s, border-color 0.25s, color 0.25s;
-}
-.found-slot.filled {
-  background: rgba(90, 138, 106, 0.15);
-  border-color: rgba(90, 138, 106, 0.40);
-  color: var(--good);
-  animation: slot-fill 0.45s ease-out;
-}
-@keyframes slot-fill {
-  0% {
-    transform: scale(0.85);
-    opacity: 0;
-  }
-  100% {
-    transform: scale(1);
-    opacity: 1;
-  }
-}
-
-/* stock */
-.stock-wrap {
   position: relative;
-  transform: translateX(16px);
 }
-.stock {
-  position: relative;
-  cursor: pointer;
-  width: var(--card-w);
+.found-slot.drop-hint {
+  background: rgba(91, 109, 138, 0.12);
+  border-color: var(--accent);
+  box-shadow: inset 0 0 0 1.5px var(--accent), 0 0 12px rgba(91,109,138,0.12);
 }
-.stock.empty {
-  width: var(--card-w);
-  height: var(--card-h);
-  background: var(--bg-slot);
-  border: var(--border-width) var(--border-style) var(--line);
-  backdrop-filter: var(--backdrop-card);
-  -webkit-backdrop-filter: var(--backdrop-card);
-  border-radius: var(--radius-md);
-  cursor: default;
-}
-.stock-count {
+.found-slot .card {
   position: absolute;
-  top: -26px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 13px;
-  color: var(--muted);
-  font-weight: 600;
-  white-space: nowrap;
-}
-.stock-pile {
-  position: relative;
-  width: var(--card-w);
-  min-height: var(--card-h);
-}
-.stock .stack-card {
-  position: absolute;
-  width: var(--card-w);
-  height: var(--card-h);
+  inset: 0;
 }
 
 /* tableau */
 .tableau {
   display: grid;
-  grid-template-columns: repeat(10, var(--card-w));
+  grid-template-columns: repeat(8, var(--card-w));
   gap: var(--col-gap);
   justify-content: center;
   touch-action: pan-y;
-}
-.card {
-  touch-action: none;
 }
 .column {
   position: relative;
@@ -191,16 +172,28 @@ body {
   content: "";
   position: absolute;
   inset: 0;
-  width: var(--card-w);
-  height: var(--card-h);
   background: var(--bg-slot);
   border: var(--border-width) var(--border-style) var(--line);
   backdrop-filter: var(--backdrop-card);
   -webkit-backdrop-filter: var(--backdrop-card);
   border-radius: var(--radius-md);
 }
-.column.drop-hint::before {
-  background: rgba(91, 109, 138, 0.15);
+.column.hint-target::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-md);
+  box-shadow: inset 0 0 0 2px rgba(234, 179, 8, 0.6);
+  animation: hint-pulse 1.2s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 10;
+}
+.column.empty-slot.hint-target::before {
+  background: var(--bg-slot);
+  border: var(--border-width) var(--border-style) var(--line);
+}
+.column.empty-slot.drop-hint::before {
+  background: rgba(91, 109, 138, 0.12);
   border-color: var(--accent);
   border-width: 1.5px;
 }
@@ -227,30 +220,16 @@ body {
   font-family: -apple-system, "SF Pro Display", "Segoe UI", sans-serif;
   font-weight: 600;
   transition: box-shadow 0.15s ease, transform 0.12s ease;
+  overflow: hidden;
 }
 
-.column .card.face-up:last-child:hover {
+.column .card.face-up:last-child:hover,
+.cell-slot .card:hover {
   box-shadow: var(--shadow-game-card-hover);
 }
 
-.card.face-down {
-  background: var(--bg-card-back);
-  backdrop-filter: var(--backdrop-card);
-  -webkit-backdrop-filter: var(--backdrop-card);
-  border: var(--border-width) var(--border-style) var(--border-card-back);
-  box-shadow: var(--shadow-game-card-back);
-}
-.card.face-down::before {
-  content: "";
-  position: absolute;
-  inset: 9px;
-  border: 1px solid var(--border-card-back);
-  border-radius: var(--radius-sm);
-  pointer-events: none;
-}
-
 .card.face-up {
-  padding: 6px 8px;
+  padding: 5px 7px;
   display: grid;
   grid-template-rows: auto 1fr auto;
   cursor: grab;
@@ -272,22 +251,21 @@ body {
 .card .corner.bot {
   align-self: end;
   justify-self: end;
-  transform: rotate(180deg);
 }
 .card .corner .rank {
-  font-size: 17px;
+  font-size: 15px;
   font-weight: 700;
   letter-spacing: -0.5px;
 }
 .card .corner .suit {
-  font-size: 12px;
+  font-size: 11px;
   margin-top: 1px;
 }
 .card .center {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 28px;
+  font-size: 24px;
   opacity: 0.92;
 }
 
@@ -310,23 +288,24 @@ body {
   80% { transform: translateX(2px); }
 }
 
-/* 落定时柔光 */
 .card.just-placed {
   animation: place-glow 0.55s ease-out;
 }
 
-/* 提示高亮 */
-.column.hint-target::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: var(--radius-md);
+.card.hint-source {
+  animation: hint-pulse 1.2s ease-in-out infinite;
+  box-shadow: inset 0 0 0 2px rgba(234, 179, 8, 0.6), 0 0 12px rgba(234, 179, 8, 0.25);
+}
+.found-slot.hint-target {
   box-shadow: inset 0 0 0 2px rgba(234, 179, 8, 0.6);
   animation: hint-pulse 1.2s ease-in-out infinite;
-  pointer-events: none;
-  z-index: 10;
 }
-.card.hint-source {
+.cell-slot.hint-target {
+  box-shadow: inset 0 0 0 2px rgba(234, 179, 8, 0.6);
+  animation: hint-pulse 1.2s ease-in-out infinite;
+}
+.found-slot.hint-target .card,
+.cell-slot.hint-target .card {
   animation: hint-pulse 1.2s ease-in-out infinite;
   box-shadow: inset 0 0 0 2px rgba(234, 179, 8, 0.6), 0 0 12px rgba(234, 179, 8, 0.25);
 }
@@ -337,48 +316,18 @@ body {
 @keyframes place-glow {
   0% {
     box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.9),
-      0 0 0 0 rgba(91, 109, 138, 0.50),
-      0 4px 12px rgba(0, 0, 0, 0.08),
-      0 1px 3px rgba(0, 0, 0, 0.06);
+      var(--shadow-game-card),
+      0 0 0 0 var(--glow-color, rgba(91, 109, 138, 0.50));
   }
   60% {
     box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.9),
-      0 0 0 5px rgba(91, 109, 138, 0.18),
-      0 4px 12px rgba(0, 0, 0, 0.08),
-      0 1px 3px rgba(0, 0, 0, 0.06);
+      var(--shadow-game-card),
+      0 0 0 5px var(--glow-color, rgba(91, 109, 138, 0.18));
   }
   100% {
     box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.9),
-      0 0 0 0 rgba(91, 109, 138, 0),
-      0 4px 12px rgba(0, 0, 0, 0.08),
-      0 1px 3px rgba(0, 0, 0, 0.06);
-  }
-}
-
-/* 收完一组 */
-.column.collect-flash::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: var(--radius-md);
-  animation: collect-glow 0.75s ease-out forwards;
-  pointer-events: none;
-}
-@keyframes collect-glow {
-  0% {
-    background: rgba(90, 138, 106, 0);
-    box-shadow: 0 0 0 0 rgba(90, 138, 106, 0.40);
-  }
-  30% {
-    background: rgba(90, 138, 106, 0.18);
-    box-shadow: 0 0 20px 2px rgba(90, 138, 106, 0.25);
-  }
-  100% {
-    background: rgba(90, 138, 106, 0);
-    box-shadow: 0 0 0 16px rgba(90, 138, 106, 0);
+      var(--shadow-game-card),
+      0 0 0 0 transparent;
   }
 }
 
@@ -402,7 +351,7 @@ body {
   transform: rotate(-1deg);
 }
 
-/* ----- 胜利覆盖层 ----- */
+/* ----- 覆盖层 ----- */
 .overlay {
   position: fixed;
   inset: 0;
@@ -418,30 +367,6 @@ body {
   display: none;
 }
 
-/* 加载覆盖层 */
-#loading-overlay .overlay-card {
-  min-width: 280px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 18px;
-}
-#loading-overlay .overlay-title {
-  margin-bottom: 0;
-  font-size: 18px;
-}
-
-.spinner {
-  width: 32px;
-  height: 32px;
-  border: 3px solid var(--line);
-  border-top-color: var(--accent);
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
-}
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
 .overlay-card {
   background: var(--bg-glass-hover);
   backdrop-filter: var(--backdrop-overlay);
@@ -462,7 +387,7 @@ body {
 }
 .overlay-stats {
   display: flex;
-  gap: 32px;
+  gap: 24px;
   justify-content: center;
   margin: 22px 0 30px;
   color: var(--muted);
@@ -501,22 +426,6 @@ body {
   transform: translateX(-50%) translateY(0);
 }
 
-.solvable-check {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 13px;
-  color: var(--muted);
-  cursor: pointer;
-  user-select: none;
-}
-.solvable-check input[type="checkbox"] {
-  cursor: pointer;
-  accent-color: var(--accent);
-  width: 15px;
-  height: 15px;
-}
-
 .confirm-card {
   min-width: 320px;
   padding: 36px 44px;
@@ -542,17 +451,19 @@ body {
   border-color: var(--line-hover);
 }
 
-html[data-theme="sketch"] #difficulty {
-  transform: none;
+.overlay-actions {
+  margin-top: 24px;
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
 }
 
 /* --- Help overlay --- */
-
 .help-section {
   margin-top: 16px;
   text-align: left;
 }
-
 .help-section-title {
   font-size: 15px;
   font-weight: 700;
@@ -561,33 +472,27 @@ html[data-theme="sketch"] #difficulty {
   padding-bottom: 4px;
   border-bottom: 1px solid var(--line);
 }
-
 .help-rules {
   font-size: 13px;
   line-height: 1.7;
   color: var(--muted);
 }
-
 .help-rules p {
   margin: 0 0 6px 0;
 }
-
 .help-rules p:last-child {
   margin-bottom: 0;
 }
-
 .help-rules strong {
   color: var(--ink);
   font-weight: 600;
 }
-
 .help-content {
   text-align: left;
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
-
 .help-row {
   display: flex;
   align-items: center;
@@ -595,7 +500,6 @@ html[data-theme="sketch"] #difficulty {
   font-size: 14px;
   color: var(--ink);
 }
-
 .help-row kbd {
   display: inline-flex;
   align-items: center;
@@ -609,14 +513,12 @@ html[data-theme="sketch"] #difficulty {
   background: var(--bg-glass);
   border: var(--border-width) var(--border-style) var(--line);
   border-radius: var(--radius-sm);
-  box-shadow: var(--cell-shadow);
+  box-shadow: var(--shadow-highlight);
   white-space: nowrap;
   flex-shrink: 0;
 }
 
-
-/* --- Confetti celebration --- */
-
+/* --- Confetti --- */
 .confetti-piece {
   position: fixed;
   top: -10px;
@@ -624,9 +526,50 @@ html[data-theme="sketch"] #difficulty {
   pointer-events: none;
   animation: confetti-fall 2.5s ease-out forwards;
 }
-
 @keyframes confetti-fall {
   0% { transform: translateY(0) rotate(0deg); opacity: 1; }
   100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
 }
 
+/* --- Responsive --- */
+@media (max-width: 760px) {
+  :root {
+    --card-w: 52px;
+    --card-h: 72px;
+    --face-offset: 16px;
+  }
+  .board {
+    padding: 20px 10px 40px;
+  }
+  .board-top {
+    margin-bottom: 20px;
+  }
+  .topbar {
+    padding: 12px 16px;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .topbar-stats {
+    order: 3;
+    width: 100%;
+    justify-content: center;
+    gap: 16px;
+  }
+  .card .corner .rank { font-size: 12px; }
+  .card .corner .suit { font-size: 9px; }
+  .card .center { font-size: 18px; }
+}
+
+@media (max-width: 520px) {
+  :root {
+    --card-w: 40px;
+    --card-h: 56px;
+    --face-offset: 12px;
+    --col-gap: 4px;
+  }
+  .card .corner .rank { font-size: 10px; }
+  .card .corner .suit { font-size: 8px; }
+  .card .center { font-size: 14px; }
+  .freecells { gap: 4px; }
+  .foundation { gap: 4px; }
+}

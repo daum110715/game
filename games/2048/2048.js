@@ -138,40 +138,48 @@ function isValidGrid(grid) {
   });
 }
 
-function normalizeStatsData(raw) {
-  return {
-    started: Number.isFinite(raw?.started) ? Math.max(0, raw.started) : 0,
-    sessions: Array.isArray(raw?.sessions)
-      ? raw.sessions.filter(
-          (item) =>
-            item &&
-            typeof item.sessionId === "string" &&
-            Number.isFinite(item.score) &&
-            Number.isFinite(item.moves) &&
-            Number.isFinite(item.maxTile) &&
-            Number.isFinite(item.timeMs) &&
-            Number.isFinite(item.completedAt)
-        )
-      : [],
-  };
+function defaultStats() {
+  return { version: 2, started: 0, won: 0, sessions: [] };
 }
 
-function loadStatsData() {
+function normalizeStatsData(raw) {
+  const sessions = Array.isArray(raw?.sessions)
+    ? raw.sessions.filter(
+        (item) =>
+          item &&
+          typeof item.sessionId === "string" &&
+          Number.isFinite(item.score) &&
+          Number.isFinite(item.moves) &&
+          Number.isFinite(item.maxTile) &&
+          Number.isFinite(item.timeMs) &&
+          Number.isFinite(item.completedAt)
+      )
+    : [];
+  const started = Number.isFinite(raw?.started) ? Math.max(0, raw.started) : 0;
+  let won = Number.isFinite(raw?.won) ? Math.max(0, raw.won) : 0;
+  if (!Number.isFinite(raw?.version)) {
+    won = sessions.filter((s) => s.won).length;
+  }
+  return { version: 2, started, won, sessions };
+}
+
+function getStats() {
   try {
     return normalizeStatsData(JSON.parse(localStorage.getItem(STATS_KEY)));
   } catch {
-    return normalizeStatsData(null);
+    return defaultStats();
   }
 }
 
 function saveStatsData(stats) {
   try {
+    stats.won = stats.sessions.filter((s) => s.won).length;
     localStorage.setItem(STATS_KEY, JSON.stringify(stats));
   } catch {}
 }
 
 function recordStart() {
-  const stats = loadStatsData();
+  const stats = getStats();
   stats.started += 1;
   saveStatsData(stats);
 }
@@ -190,7 +198,7 @@ function loadGame() {
     state.won = Boolean(data.won);
     state.over = Boolean(data.over);
     state.keepPlaying = Boolean(data.keepPlaying);
-    state.history = [];
+    state.history = Array.isArray(data.history) ? data.history : [];
     state.lastSpawnKeys = [];
     state.lastMergeKeys = [];
     state.animating = false;
@@ -477,7 +485,7 @@ function buildCurrentSessionResult() {
 
 function upsertCurrentSessionResult() {
   if (!state.sessionId || state.moves === 0) return;
-  const stats = loadStatsData();
+  const stats = getStats();
   const result = buildCurrentSessionResult();
   stats.sessions = [
     result,
@@ -492,7 +500,7 @@ function upsertCurrentSessionResult() {
 
 function removeCurrentSessionRecord() {
   if (!state.sessionId || !state.sessionRecorded) return;
-  const stats = loadStatsData();
+  const stats = getStats();
   const nextSessions = stats.sessions.filter(
     (item) => item.sessionId !== state.sessionId
   );
@@ -614,7 +622,7 @@ function buildStatsSummary(stats) {
 }
 
 function renderStatsPanel() {
-  const summary = buildStatsSummary(loadStatsData());
+  const summary = buildStatsSummary(getStats());
   statsStartedEl.textContent = String(summary.started);
   statsWonEl.textContent = String(summary.won);
   statsWinRateEl.textContent = `${summary.winRate}%`;
@@ -692,23 +700,7 @@ function getStatusText() {
   return "进行中";
 }
 
-function launchConfetti() {
-  const colors = ['#ff3b30', '#ff9500', '#ffcc00', '#4cd964', '#5ac8fa', '#007aff', '#5856d6', '#ff2d55'];
-  const count = 80;
-  for (let i = 0; i < count; i++) {
-    const el = document.createElement('div');
-    el.className = 'confetti-piece';
-    el.style.left = (Math.random() * 100) + 'vw';
-    el.style.background = colors[Math.floor(Math.random() * colors.length)];
-    el.style.width = (4 + Math.random() * 8) + 'px';
-    el.style.height = (4 + Math.random() * 8) + 'px';
-    el.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
-    el.style.animationDuration = (2 + Math.random() * 1.5) + 's';
-    el.style.animationDelay = (Math.random() * 0.5) + 's';
-    document.body.appendChild(el);
-    setTimeout(() => { if (el.parentNode) el.parentNode.removeChild(el); }, 4000);
-  }
-}
+/* confetti shared: scripts/confetti.js */
 
 function updateOverlay() {
   if (state.over) {
@@ -795,6 +787,9 @@ function shakeBoard() {
 
 function requestNewGame() {
   if (state.animating) return;
+  if (state.moves > 0 && !state.over && !state.won) {
+    if (!window.confirm('当前游戏正在进行，确定要重新开始吗？')) return;
+  }
   startNewGame();
 }
 
