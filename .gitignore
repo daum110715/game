@@ -4,3 +4,10 @@ verify/
 screenshot*.js
 verify-*.js
 .claude/
+
+# wrangler files
+.wrangler
+.dev.vars*
+!.dev.vars.example
+.env*
+!.env.example
