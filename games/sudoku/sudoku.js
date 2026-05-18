@@ -6,10 +6,6 @@ const DIFFICULTIES = {
   hard:   { name: '困难', holes: 56 }
 };
 
-function $(id) { return document.getElementById(id); }
-function addClass(el, c) { if (el) el.classList.add(c); }
-function removeClass(el, c) { if (el) el.classList.remove(c); }
-
 function shuffle(a) {
   for (let i = a.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -116,16 +112,18 @@ let notes = [];
 let selected = null;
 let noteMode = false;
 let moves = 0;
-let startTime = 0;
-let timerInterval = null;
 let gameWon = false;
 let difficulty = 'medium';
 let history = [];
 let conflicts = new Set();
 let isGenerating = false;
 
-const LS_STATS = 'game_sudoku_stats_v1';
-const LS_SAVE = 'game_sudoku_save_v1';
+const $ = GameUtils.$;
+const storage = new GameStorage('game_sudoku');
+const statsMgr = new GameStats(storage, 'stats_v1', { version: 2, started: 0, won: 0, sessions: [] });
+const timer = new GameTimer(ms => {
+  $('stat-time').textContent = GameUtils.formatTime(Math.floor(ms / 1000));
+});
 
 function createEmptyGrid() {
   return Array.from({ length: 9 }, () => Array(9).fill(0));
@@ -147,9 +145,8 @@ function newGame(diff) {
   }
 
   isGenerating = true;
-  const loadingEl = $('loading-overlay');
-  if (loadingEl) loadingEl.hidden = false;
-  stopTimer();
+  GameOverlay.show('loading-overlay');
+  timer.stop();
 
   setTimeout(() => {
     difficulty = diff || difficulty;
@@ -171,34 +168,20 @@ function newGame(diff) {
       }
     }
 
-    startTime = Date.now();
-    startTimer();
+    timer.reset();
+    timer.start();
     render();
     safeSaveGame();
 
     isGenerating = false;
-    if (loadingEl) loadingEl.hidden = true;
+    GameOverlay.hide('loading-overlay');
   }, 10);
-}
-
-/* ---------- 计时器 ---------- */
-function startTimer() {
-  stopTimer();
-  timerInterval = setInterval(() => {
-    $('stat-time').textContent = formatTime(Math.floor((Date.now() - startTime) / 1000));
-  }, 1000);
-}
-function stopTimer() { clearInterval(timerInterval); timerInterval = null; }
-function formatTime(s) {
-  const m = Math.floor(s / 60);
-  const sec = s % 60;
-  return m + ':' + String(sec).padStart(2, '0');
 }
 
 /* ---------- 渲染 ---------- */
 function render() {
   $('stat-moves').textContent = moves;
-  $('stat-time').textContent = formatTime(Math.floor((Date.now() - startTime) / 1000));
+  $('stat-time').textContent = GameUtils.formatTime(Math.floor(timer.getElapsedMs() / 1000));
   $('stat-difficulty').textContent = DIFFICULTIES[difficulty].name;
   $('btn-undo').disabled = history.length === 0;
   $('btn-note').classList.toggle('active', noteMode);
@@ -213,7 +196,7 @@ function render() {
       cell.dataset.c = c;
 
       if (fixed[r][c]) {
-        addClass(cell, 'fixed');
+        GameUtils.addClass(cell, 'fixed');
         cell.textContent = grid[r][c];
       } else if (grid[r][c] !== 0) {
         cell.textContent = grid[r][c];
@@ -232,10 +215,10 @@ function render() {
       }
 
       if (selected && selected.r === r && selected.c === c) {
-        addClass(cell, 'selected');
+        GameUtils.addClass(cell, 'selected');
       }
       if (conflicts.has(r + ',' + c)) {
-        addClass(cell, 'conflict');
+        GameUtils.addClass(cell, 'conflict');
       }
       if (selected) {
         const sr = selected.r, sc = selected.c;
@@ -244,7 +227,7 @@ function render() {
         const sameBox = Math.floor(sr / 3) === Math.floor(r / 3) && Math.floor(sc / 3) === Math.floor(c / 3);
         const sameNum = grid[sr][sc] !== 0 && grid[r][c] === grid[sr][sc];
         if ((sameRow || sameCol || sameBox || sameNum) && !(sr === r && sc === c)) {
-          addClass(cell, 'highlight');
+          GameUtils.addClass(cell, 'highlight');
         }
       }
 
@@ -380,7 +363,7 @@ function checkWin() {
   }
   if (conflicts.size > 0) return;
   gameWon = true;
-  stopTimer();
+  timer.stop();
   updateStats(true);
   clearSave();
   setTimeout(() => {
@@ -390,48 +373,39 @@ function checkWin() {
 }
 
 function showWin() {
-  $('win-time').textContent = formatTime(Math.floor((Date.now() - startTime) / 1000));
+  $('win-time').textContent = GameUtils.formatTime(Math.floor(timer.getElapsedMs() / 1000));
   $('win-moves').textContent = moves;
   $('win-difficulty').textContent = DIFFICULTIES[difficulty].name;
   const winStats = $('win-stats');
   if (winStats) winStats.innerHTML = generateStatsHTML();
-  $('win-overlay').hidden = false;
+  GameOverlay.show('win-overlay');
 }
-function hideWin() { $('win-overlay').hidden = true; }
+function hideWin() { GameOverlay.hide('win-overlay'); }
 
 /* ---------- 统计 ---------- */
 function updateStats(won) {
-  const stats = getStats();
+  const stats = statsMgr.get();
   stats.started++;
   if (won) {
     stats.won++;
-    const timeMs = Date.now() - startTime;
     stats.sessions.unshift({
       difficulty,
       won: true,
-      timeMs,
+      timeMs: timer.getElapsedMs(),
       completedAt: Date.now()
     });
     if (stats.sessions.length > 50) stats.sessions.pop();
   }
-  localStorage.setItem(LS_STATS, JSON.stringify(stats));
-}
-
-function getStats() {
-  try {
-    const data = JSON.parse(localStorage.getItem(LS_STATS));
-    if (data && data.version === 2) return data;
-  } catch {}
-  return { version: 2, started: 0, won: 0, sessions: [] };
+  statsMgr.set(stats);
 }
 
 function generateStatsHTML() {
-  const s = getStats();
+  const s = statsMgr.get();
   const winRate = s.started ? Math.round((s.won / s.started) * 100) : 0;
   const best = s.sessions.filter(x => x.won).sort((a, b) => a.timeMs - b.timeMs)[0];
   return (
     '<div>胜率 <strong>' + winRate + '%</strong></div>' +
-    '<div>最佳时间 <strong>' + (best ? formatTime(Math.floor(best.timeMs / 1000)) : '-') + '</strong></div>'
+    '<div>最佳时间 <strong>' + (best ? GameUtils.formatTime(Math.floor(best.timeMs / 1000)) : '-') + '</strong></div>'
   );
 }
 
@@ -441,18 +415,16 @@ function saveGame() {
     grid, solution, fixed,
     notes: notes.map(row => row.map(n => [...n])),
     difficulty, moves,
-    elapsedMs: Date.now() - startTime,
+    elapsedMs: timer.getElapsedMs(),
     gameWon
   };
-  localStorage.setItem(LS_SAVE, JSON.stringify(data));
+  storage.save('save_v1', data);
 }
 
 function loadGame() {
   try {
-    const raw = localStorage.getItem(LS_SAVE);
-    if (!raw) return false;
-    const data = JSON.parse(raw);
-    if (!Array.isArray(data.grid) || !Array.isArray(data.solution)) return false;
+    const data = storage.load('save_v1');
+    if (!data || !Array.isArray(data.grid) || !Array.isArray(data.solution)) return false;
     grid = data.grid;
     solution = data.solution;
     fixed = Array.isArray(data.fixed) ? data.fixed : createEmptyFixed();
@@ -461,10 +433,10 @@ function loadGame() {
     moves = data.moves || 0;
     gameWon = data.gameWon || false;
     const elapsed = data.elapsedMs || 0;
-    startTime = Date.now() - elapsed;
+    timer.setElapsedMs(elapsed);
     updateConflicts();
     render();
-    if (!gameWon) startTimer();
+    if (!gameWon) timer.start();
     return true;
   } catch { return false; }
 }
@@ -474,28 +446,15 @@ function safeSaveGame() {
 }
 
 function clearSave() {
-  localStorage.removeItem(LS_SAVE);
+  storage.remove('save_v1');
 }
 
 /* ---------- 弹窗 ---------- */
-function showHelp() { $('help-overlay').hidden = false; }
-function hideHelp() { $('help-overlay').hidden = true; }
-
-function showConfirm(msg) {
-  return new Promise(resolve => {
-    $('confirm-message').textContent = msg;
-    $('confirm-overlay').hidden = false;
-    $('confirm-ok').onclick = () => { $('confirm-overlay').hidden = true; resolve(true); };
-    $('confirm-cancel').onclick = () => { $('confirm-overlay').hidden = true; resolve(false); };
-  });
-}
+function showHelp() { GameOverlay.show('help-overlay'); }
+function hideHelp() { GameOverlay.hide('help-overlay'); }
 
 /* ---------- 键盘 ---------- */
 function onKeyDown(e) {
-  if (e.key === 'Escape') {
-    hideWin(); hideHelp(); $('confirm-overlay').hidden = true;
-    return;
-  }
   if (e.key === '?') { showHelp(); return; }
   if (isGenerating) return;
   if (gameWon) return;
@@ -504,7 +463,7 @@ function onKeyDown(e) {
   if (key === 'r') {
     e.preventDefault();
     if (moves > 0 && !gameWon) {
-      showConfirm('当前对局尚未结束，确定要重新开始吗？').then(ok => { if (ok) newGame(); });
+      GameOverlay.showConfirm('当前对局尚未结束，确定要重新开始吗？').then(ok => { if (ok) newGame(); });
     } else {
       newGame();
     }
@@ -537,10 +496,12 @@ function onKeyDown(e) {
 
 /* ---------- 初始化 ---------- */
 function init() {
+  GameOverlay.bindEscToClose('win-overlay', 'help-overlay', 'confirm-overlay');
+
   const diffEl = $('difficulty');
   diffEl.addEventListener('change', () => {
     if (isGenerating) { diffEl.value = difficulty; if (diffEl._updateCustomDropdown) diffEl._updateCustomDropdown(); return; }
-    showConfirm('切换难度将开始新游戏，当前进度将丢失。').then(ok => {
+    GameOverlay.showConfirm('切换难度将开始新游戏，当前进度将丢失。').then(ok => {
       if (ok) newGame(diffEl.value);
       else { diffEl.value = difficulty; if (diffEl._updateCustomDropdown) diffEl._updateCustomDropdown(); }
     });
@@ -549,7 +510,7 @@ function init() {
   $('btn-new').addEventListener('click', () => {
     if (isGenerating) return;
     if (moves > 0 && !gameWon) {
-      showConfirm('当前对局尚未结束，确定要重新开始吗？').then(ok => { if (ok) newGame(); });
+      GameOverlay.showConfirm('当前对局尚未结束，确定要重新开始吗？').then(ok => { if (ok) newGame(); });
     } else {
       newGame();
     }

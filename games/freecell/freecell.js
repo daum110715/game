@@ -1,49 +1,50 @@
 /* ===== FreeCell 空当接龙 ===== */
 
-const SUITS = ['\u2660', '\u2665', '\u2666', '\u2663'];
+const SUITS = ['♠', '♥', '♦', '♣'];
 const RANKS = ['A','2','3','4','5','6','7','8','9','10','J','Q','K'];
 const RANK_VAL = {A:1, J:11, Q:12, K:13};
 function val(r) { return RANK_VAL[r] || parseInt(r); }
 function suitColor(s) { return s % 2 === 0 ? 'black' : 'red'; }
 
-function $(id) { return document.getElementById(id); }
-function addClass(el, c) { if (el) el.classList.add(c); }
-function removeClass(el, c) { if (el) el.classList.remove(c); }
+const $ = GameUtils.$;
+const storage = new GameStorage('game_freecell');
+const statsMgr = new GameStats(storage, 'stats_v1', { version: 2, started: 0, won: 0, sessions: [], bestTime: 0, bestMoves: 0, totalTime: 0, totalMoves: 0 });
+const timer = new GameTimer(ms => {
+  $('stat-time').textContent = GameUtils.formatTime(Math.floor(ms / 1000));
+});
 
 /* ---------- 状态 ---------- */
 let freecell = [null, null, null, null];
 let foundation = [[], [], [], []];
 let tableau = [[], [], [], [], [], [], [], []];
-let moves = 0, startTime = 0, timerInterval = null;
-let history = [];
+let moves = 0, history = [];
 let drag = null;
 let gameWon = false;
 let hintTimer = null;
 let hintSource = null; // { type, idx, cardIdx? }
 let hintTarget = null; // { type, idx }
 
-const LS_STATS = 'game_freecell_stats_v1';
-const LS_SAVE = 'game_freecell_save_v1';
-
 function migrateLegacyKeys() {
   const oldSave = localStorage.getItem('freecell_save_v1');
-  if (oldSave && !localStorage.getItem(LS_SAVE)) {
-    localStorage.setItem(LS_SAVE, oldSave);
+  if (oldSave && !localStorage.getItem(storage._key('save_v1'))) {
+    localStorage.setItem(storage._key('save_v1'), oldSave);
+  }
+  const oldStats = localStorage.getItem('freecell_stats_v1');
+  if (oldStats && !localStorage.getItem(storage._key('stats_v1'))) {
+    localStorage.setItem(storage._key('stats_v1'), oldStats);
   }
 }
-const LS_THEME = 'theme';
 
 /* ---------- 初始化 ---------- */
 function init() {
   migrateLegacyKeys();
-  loadTheme();
   buildTableau();
   initEvents();
   const saved = loadGame();
   if (saved) {
     restoreState(saved);
-    if (gameWon) { stopTimer(); }
-    else { startTimer(); }
+    if (gameWon) { timer.stop(); }
+    else { timer.start(); }
     render();
   } else {
     newGame();
@@ -61,28 +62,12 @@ function buildTableau() {
   }
 }
 
-/* ---------- 主题 ---------- */
-function loadTheme() {
-  const t = localStorage.getItem(LS_THEME) || 'sketch';
-  document.documentElement.setAttribute('data-theme', t);
-  const sel = $('theme-switcher');
-  if (sel) {
-    sel.value = t;
-    if (sel._updateCustomDropdown) sel._updateCustomDropdown();
-  }
-}
-
-function setTheme(t) {
-  document.documentElement.setAttribute('data-theme', t);
-  localStorage.setItem(LS_THEME, t);
-}
-
 /* ---------- 新游戏 ---------- */
 function newGame() {
   if (moves > 0 && !gameWon) {
     updateStats(false);
   }
-  stopTimer();
+  timer.stop();
   gameWon = false;
   moves = 0;
   history = [];
@@ -107,8 +92,8 @@ function newGame() {
     }
   }
 
-  startTime = Date.now();
-  startTimer();
+  timer.reset();
+  timer.start();
   clearHint();
   render();
   safeSaveGame();
@@ -121,27 +106,11 @@ function shuffle(a) {
   }
 }
 
-/* ---------- 计时器 ---------- */
-function startTimer() {
-  stopTimer();
-  timerInterval = setInterval(() => {
-    $('stat-time').textContent = formatTime(Math.floor((Date.now() - startTime) / 1000));
-  }, 1000);
-}
-function stopTimer() { clearInterval(timerInterval); timerInterval = null; }
-function formatTime(s) {
-  const h = Math.floor(s / 3600);
-  const m = Math.floor((s % 3600) / 60);
-  const sec = s % 60;
-  if (h > 0) return h + ':' + String(m).padStart(2, '0') + ':' + String(sec).padStart(2, '0');
-  return m + ':' + String(sec).padStart(2, '0');
-}
-
 /* ---------- 渲染 ---------- */
 function render() {
   clearHint();
   $('stat-moves').textContent = moves;
-  $('stat-time').textContent = formatTime(Math.floor((Date.now() - startTime) / 1000));
+  $('stat-time').textContent = GameUtils.formatTime(Math.floor(timer.getElapsedMs() / 1000));
 
   // freecells
   const fcSlots = document.querySelectorAll('.cell-slot');
@@ -171,10 +140,10 @@ function render() {
   cols.forEach((col, i) => {
     col.innerHTML = '';
     if (tableau[i].length === 0) {
-      addClass(col, 'empty-slot');
+      GameUtils.addClass(col, 'empty-slot');
       col.style.height = '';
     } else {
-      removeClass(col, 'empty-slot');
+      GameUtils.removeClass(col, 'empty-slot');
       tableau[i].forEach((card, ci) => {
         const el = cardEl(card);
         el.style.top = (ci * offset) + 'px';
@@ -219,27 +188,27 @@ function applyHint() {
   // source
   if (hintSource.type === 'fc') {
     const slot = document.querySelector('.cell-slot[data-idx="' + hintSource.idx + '"]');
-    if (slot) addClass(slot.querySelector('.card'), 'hint-source');
+    if (slot) GameUtils.addClass(slot.querySelector('.card'), 'hint-source');
   } else if (hintSource.type === 'tab') {
     const col = document.querySelectorAll('.column')[hintSource.idx];
-    if (col) addClass(col.children[hintSource.cardIdx], 'hint-source');
+    if (col) GameUtils.addClass(col.children[hintSource.cardIdx], 'hint-source');
   }
   // target
   if (hintTarget.type === 'fc') {
-    addClass(document.querySelector('.cell-slot[data-idx="' + hintTarget.idx + '"]'), 'hint-target');
+    GameUtils.addClass(document.querySelector('.cell-slot[data-idx="' + hintTarget.idx + '"]'), 'hint-target');
   } else if (hintTarget.type === 'found') {
-    addClass(document.querySelector('.found-slot[data-pile="' + hintTarget.idx + '"]'), 'hint-target');
+    GameUtils.addClass(document.querySelector('.found-slot[data-pile="' + hintTarget.idx + '"]'), 'hint-target');
   } else if (hintTarget.type === 'tab') {
     const col = document.querySelectorAll('.column')[hintTarget.idx];
-    if (col) addClass(col, 'hint-target');
+    if (col) GameUtils.addClass(col, 'hint-target');
   }
 }
 
 function clearHint() {
   if (hintTimer) { clearTimeout(hintTimer); hintTimer = null; }
   hintSource = null; hintTarget = null;
-  document.querySelectorAll('.hint-source').forEach(el => removeClass(el, 'hint-source'));
-  document.querySelectorAll('.hint-target').forEach(el => removeClass(el, 'hint-target'));
+  document.querySelectorAll('.hint-source').forEach(el => GameUtils.removeClass(el, 'hint-source'));
+  document.querySelectorAll('.hint-target').forEach(el => GameUtils.removeClass(el, 'hint-target'));
 }
 
 function findHint() {
@@ -331,9 +300,6 @@ function maxMoveCount() {
 
 /* ---------- 拖拽系统 ---------- */
 function initEvents() {
-  // 主题
-  $('theme-switcher')?.addEventListener('change', e => setTheme(e.target.value));
-
   // 按钮
   $('btn-new').addEventListener('click', () => {
     showConfirm('开始新游戏？当前进度将丢失。').then(ok => { if (ok) newGame(); });
@@ -443,11 +409,11 @@ function onPointerMove(e) {
     if (Math.sqrt(dx * dx + dy * dy) < 3) return;
     // 真正开始拖拽
     drag.active = true;
-    addClass(drag.origEl, 'dragging');
+    GameUtils.addClass(drag.origEl, 'dragging');
     if (drag.sourceType === 'tab') {
       const colEl2 = document.querySelectorAll('.column')[drag.sourceIdx];
       for (let i = drag.cardIdx + 1; i < colEl2.children.length; i++) {
-        addClass(colEl2.children[i], 'dragging');
+        GameUtils.addClass(colEl2.children[i], 'dragging');
       }
     }
     const layer = $('drag-layer');
@@ -465,17 +431,17 @@ function onPointerMove(e) {
   }
   updateDragPos(e.clientX, e.clientY);
   // 清除旧的drop hint
-  document.querySelectorAll('.drop-hint').forEach(el => removeClass(el, 'drop-hint'));
+  document.querySelectorAll('.drop-hint').forEach(el => GameUtils.removeClass(el, 'drop-hint'));
   // 计算hover目标
   const target = getDropTarget(e.clientX, e.clientY);
   if (target) {
     if (target.type === 'tab') {
       const col = document.querySelectorAll('.column')[target.idx];
-      addClass(col, 'drop-hint');
+      GameUtils.addClass(col, 'drop-hint');
     } else if (target.type === 'fc') {
-      addClass(document.querySelector('.cell-slot[data-idx="' + target.idx + '"]'), 'drop-hint');
+      GameUtils.addClass(document.querySelector('.cell-slot[data-idx="' + target.idx + '"]'), 'drop-hint');
     } else if (target.type === 'found') {
-      addClass(document.querySelector('.found-slot[data-pile="' + target.idx + '"]'), 'drop-hint');
+      GameUtils.addClass(document.querySelector('.found-slot[data-pile="' + target.idx + '"]'), 'drop-hint');
     }
     drag.dropTarget = target;
   } else {
@@ -493,8 +459,8 @@ function onPointerUp(e) {
   if (target) {
     const valid = attemptMove(drag.sourceType, drag.sourceIdx, drag.cardIdx, target.type, target.idx);
     if (!valid && drag.origEl) {
-      addClass(drag.origEl, 'invalid-flash');
-      setTimeout(() => removeClass(drag.origEl, 'invalid-flash'), 400);
+      GameUtils.addClass(drag.origEl, 'invalid-flash');
+      setTimeout(() => GameUtils.removeClass(drag.origEl, 'invalid-flash'), 400);
     }
   }
   endDrag();
@@ -503,8 +469,8 @@ function onPointerUp(e) {
 function endDrag() {
   if (!drag) return;
   // 移除dragging class
-  document.querySelectorAll('.dragging').forEach(el => removeClass(el, 'dragging'));
-  document.querySelectorAll('.drop-hint').forEach(el => removeClass(el, 'drop-hint'));
+  document.querySelectorAll('.dragging').forEach(el => GameUtils.removeClass(el, 'dragging'));
+  document.querySelectorAll('.drop-hint').forEach(el => GameUtils.removeClass(el, 'drop-hint'));
   $('drag-layer').innerHTML = '';
   drag = null;
 }
@@ -695,9 +661,9 @@ function autoCollect() {
 /* ---------- 撤销 ---------- */
 function pushHistory() {
   history.push({
-    freecell: deepCopy(freecell),
-    foundation: deepCopy(foundation),
-    tableau: deepCopy(tableau),
+    freecell: GameUtils.deepClone(freecell),
+    foundation: GameUtils.deepClone(foundation),
+    tableau: GameUtils.deepClone(tableau),
     moves
   });
   if (history.length > 200) history.shift();
@@ -716,15 +682,13 @@ function undo() {
   safeSaveGame();
 }
 
-function deepCopy(o) { return JSON.parse(JSON.stringify(o)); }
-
 /* ---------- 胜利 ---------- */
 function checkWin() {
   if (gameWon) return;
   const total = foundation.reduce((s, p) => s + p.length, 0);
   if (total < 52) return;
   gameWon = true;
-  stopTimer();
+  timer.stop();
   updateStats(true);
   setTimeout(() => {
     showWin();
@@ -735,18 +699,18 @@ function checkWin() {
 function showWin() {
   if (!gameWon) return;
   $('win-moves').textContent = moves;
-  $('win-time').textContent = formatTime(Math.floor((Date.now() - startTime) / 1000));
+  $('win-time').textContent = GameUtils.formatTime(Math.floor(timer.getElapsedMs() / 1000));
   $('win-stats').innerHTML = generateStatsHTML();
-  $('win-overlay').hidden = false;
+  GameOverlay.show('win-overlay');
 }
-function hideWin() { $('win-overlay').hidden = true; }
+function hideWin() { GameOverlay.hide('win-overlay'); }
 
 /* ---------- 统计 ---------- */
 function updateStats(won) {
   const stats = getStats();
   stats.started++;
   if (won) {
-    const time = Math.floor((Date.now() - startTime) / 1000);
+    const time = Math.floor(timer.getElapsedMs() / 1000);
     stats.totalTime += time;
     stats.totalMoves += moves;
     stats.won++;
@@ -754,12 +718,12 @@ function updateStats(won) {
     if (time < stats.bestTime || stats.bestTime === 0) stats.bestTime = time;
     if (moves < stats.bestMoves || stats.bestMoves === 0) stats.bestMoves = moves;
   }
-  localStorage.setItem(LS_STATS, JSON.stringify(stats));
+  storage.save('stats_v1', stats);
 }
 
 function getStats() {
   try {
-    const raw = JSON.parse(localStorage.getItem(LS_STATS));
+    const raw = storage.load('stats_v1');
     if (!raw) return defaultStats();
     if (raw.version === 2) return raw;
     // migrate old format
@@ -786,24 +750,24 @@ function generateStatsHTML() {
   const avgTime = s.won ? Math.round(s.totalTime / s.won) : 0;
   return (
     '<div>胜率 <strong>' + winRate + '%</strong></div>' +
-    '<div>最佳时间 <strong>' + (s.bestTime != null ? formatTime(s.bestTime) : '-') + '</strong></div>' +
+    '<div>最佳时间 <strong>' + (s.bestTime != null ? GameUtils.formatTime(s.bestTime) : '-') + '</strong></div>' +
     '<div>最佳步数 <strong>' + (s.bestMoves != null ? s.bestMoves : '-') + '</strong></div>' +
-    '<div>平均通关用时 <strong>' + (avgTime != null ? formatTime(avgTime) : '-') + '</strong></div>'
+    '<div>平均通关用时 <strong>' + (avgTime != null ? GameUtils.formatTime(avgTime) : '-') + '</strong></div>'
   );
 }
 
 /* ---------- 保存/加载 ---------- */
 function saveGame() {
-  const elapsed = Math.floor((Date.now() - startTime) / 1000);
+  const elapsed = Math.floor(timer.getElapsedMs() / 1000);
   const data = {
     freecell, foundation, tableau, moves,
     elapsed, gameWon, history
   };
-  localStorage.setItem(LS_SAVE, JSON.stringify(data));
+  storage.save('save_v1', data);
 }
 
 function loadGame() {
-  try { return JSON.parse(localStorage.getItem(LS_SAVE)); }
+  try { return storage.load('save_v1'); }
   catch { return null; }
 }
 
@@ -813,7 +777,7 @@ function restoreState(data) {
   tableau = data.tableau || [[], [], [], [], [], [], [], []];
   moves = data.moves || 0;
   const elapsed = data.elapsed || 0;
-  startTime = Date.now() - elapsed * 1000;
+  timer.setElapsedMs(elapsed * 1000);
   gameWon = data.gameWon || false;
   history = data.history || [];
 }
@@ -834,14 +798,14 @@ function hideConfirm() {
   $('confirm-overlay').hidden = true;
 }
 
-function showHelp() { $('help-overlay').hidden = false; }
-function hideHelp() { $('help-overlay').hidden = true; }
+function showHelp() { GameOverlay.show('help-overlay'); }
+function hideHelp() { GameOverlay.hide('help-overlay'); }
 
 function showToast(msg) {
   const t = $('toast');
   t.textContent = msg;
-  addClass(t, 'show');
-  setTimeout(() => removeClass(t, 'show'), 1800);
+  GameUtils.addClass(t, 'show');
+  setTimeout(() => GameUtils.removeClass(t, 'show'), 1800);
 }
 
 /* ---------- 键盘 ---------- */

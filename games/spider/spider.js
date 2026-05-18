@@ -13,47 +13,44 @@ const DEAL_STAGGER_MS = 55;    // 每张错开出发的间隔
 
 let state = null;
 let dropHintCol = null;
-let gameStartTime = 0;
-let gameTimerInterval = null;
 let hintTimer = null;
 
-const STATS_KEY = "game_spider_stats_v1";
-const SAVE_KEY = "game_spider_save_v1";
+const storage = new GameStorage('game_spider');
+const timer = new GameTimer(ms => {
+  $('stat-time').textContent = GameUtils.formatTime(Math.floor(ms / 1000));
+});
 
 function migrateLegacyKeys() {
-  const oldStats = localStorage.getItem("spider_stats_v1");
-  if (oldStats && !localStorage.getItem(STATS_KEY)) {
-    localStorage.setItem(STATS_KEY, oldStats);
+  const newStatsKey = storage._key('stats_v1');
+  const oldStats = localStorage.getItem('spider_stats_v1');
+  if (oldStats && !localStorage.getItem(newStatsKey)) {
+    localStorage.setItem(newStatsKey, oldStats);
   }
-  const oldSave = localStorage.getItem("spider_save_v1");
-  if (oldSave && !localStorage.getItem(SAVE_KEY)) {
-    localStorage.setItem(SAVE_KEY, oldSave);
+  const newSaveKey = storage._key('save_v1');
+  const oldSave = localStorage.getItem('spider_save_v1');
+  if (oldSave && !localStorage.getItem(newSaveKey)) {
+    localStorage.setItem(newSaveKey, oldSave);
   }
 }
 
 function saveGame() {
   if (!state) return;
-  localStorage.setItem(
-    SAVE_KEY,
-    JSON.stringify({
-      suits: state.suits,
-      tableau: state.tableau,
-      stock: state.stock,
-      foundation: state.foundation,
-      score: state.score,
-      moves: state.moves,
-      history: state.history.slice(-50), // 保留最近 50 步以控制体积
-      elapsedMs: getElapsedMs(),
-      savedAt: Date.now(),
-    })
-  );
+  storage.save('save_v1', {
+    suits: state.suits,
+    tableau: state.tableau,
+    stock: state.stock,
+    foundation: state.foundation,
+    score: state.score,
+    moves: state.moves,
+    history: state.history.slice(-50), // 保留最近 50 步以控制体积
+    elapsedMs: timer.getElapsedMs(),
+    savedAt: Date.now(),
+  });
 }
 function loadGame() {
   try {
-    const raw = localStorage.getItem(SAVE_KEY);
-    if (!raw) return false;
-    const data = JSON.parse(raw);
-    if (!Array.isArray(data.tableau) || !Array.isArray(data.stock)) return false;
+    const data = storage.load('save_v1');
+    if (!data || !Array.isArray(data.tableau) || !Array.isArray(data.stock)) return false;
     state = {
       suits: data.suits,
       tableau: data.tableau,
@@ -67,21 +64,21 @@ function loadGame() {
     };
     // 复原计时:把已用时长换算成"假装从过去某个时刻开始",离线时间不计入
     const elapsed = Number.isFinite(data.elapsedMs) ? data.elapsedMs : 0;
-    gameStartTime = Date.now() - Math.max(0, elapsed);
+    timer.setElapsedMs(Math.max(0, elapsed));
     dropHintCol = null;
     $("difficulty").value = String(state.suits);
     if ($("difficulty")._customSync) $("difficulty")._customSync();
     hideWin();
     clearHint();
     render();
-    startGameTimer();
+    timer.start();
     return true;
   } catch {
     return false;
   }
 }
 function clearSave() {
-  localStorage.removeItem(SAVE_KEY);
+  storage.remove('save_v1');
 }
 
 // ============================================================
@@ -259,18 +256,17 @@ function defaultStats() {
 
 function loadStats() {
   try {
-    const raw = localStorage.getItem(STATS_KEY);
+    const raw = storage.load('stats_v1');
     if (!raw) return defaultStats();
-    const stats = JSON.parse(raw);
-    if (stats && typeof stats.version === 'number') return stats;
+    if (raw && typeof raw.version === 'number') return raw;
 
     // Migrate old format: {"1": {...}, "2": {...}, "4": {...}}
     const migrated = defaultStats();
     for (const key of ['1', '2', '4']) {
-      if (stats[key]) {
-        migrated.started += stats[key].started || 0;
-        migrated.won += stats[key].won || 0;
-        migrated[key] = stats[key];
+      if (raw[key]) {
+        migrated.started += raw[key].started || 0;
+        migrated.won += raw[key].won || 0;
+        migrated[key] = raw[key];
       }
     }
     saveStats(migrated);
@@ -280,7 +276,7 @@ function loadStats() {
   }
 }
 function saveStats(stats) {
-  localStorage.setItem(STATS_KEY, JSON.stringify(stats));
+  storage.save('stats_v1', stats);
 }
 function getStatsEntry(stats, suits) {
   const key = String(suits);
@@ -295,12 +291,13 @@ function recordStart(suits) {
   const e = getStatsEntry(stats, suits);
   e.started++;
   saveStats(stats);
-  gameStartTime = Date.now();
+  timer.reset();
+  timer.start();
 }
 function recordWin(suits, score, moves) {
   const stats = loadStats();
   stats.won = (stats.won || 0) + 1;
-  const timeMs = Date.now() - gameStartTime;
+  const timeMs = timer.getElapsedMs();
   if (!Array.isArray(stats.sessions)) stats.sessions = [];
   stats.sessions.push({ suits, score, moves, timeMs, date: Date.now() });
 
@@ -313,38 +310,9 @@ function recordWin(suits, score, moves) {
   saveStats(stats);
   return e;
 }
-function formatTime(ms) {
-  const s = Math.floor(ms / 1000);
-  const m = Math.floor(s / 60);
-  const sec = s % 60;
-  return `${m}:${sec.toString().padStart(2, "0")}`;
-}
-
-function getElapsedMs() {
-  if (!gameStartTime) return 0;
-  return Math.max(0, Date.now() - gameStartTime);
-}
-
-function updateTimerDisplay() {
-  if (!gameStartTime) return;
-  $("stat-time").textContent = formatTime(getElapsedMs());
-}
-
-function startGameTimer() {
-  stopGameTimer();
-  updateTimerDisplay();
-  gameTimerInterval = setInterval(updateTimerDisplay, 1000);
-}
-
-function stopGameTimer() {
-  if (gameTimerInterval) {
-    clearInterval(gameTimerInterval);
-    gameTimerInterval = null;
-  }
-}
 
 // ----- DOM 引用 -----
-const $ = (id) => document.getElementById(id);
+const $ = GameUtils.$;
 const tableauEl = $("tableau");
 const foundationEl = $("foundation");
 const stockEl = $("stock");
@@ -396,7 +364,7 @@ function applyNewGame(suitsCount, tableau, stock) {
   clearHint();
   recordStart(suitsCount);
   render();
-  startGameTimer();
+  timer.start();
 }
 
 async function newGame(suitsCount, ensureSolvable = false) {
@@ -984,25 +952,25 @@ function hideConfirm(result = false) {
 /* confetti shared: scripts/confetti.js */
 
 function showWin() {
-  stopGameTimer();
+  timer.stop();
   clearSave();
   $("win-score").textContent = state.score;
   $("win-moves").textContent = state.moves;
   const stats = recordWin(state.suits, state.score, state.moves);
   renderWinStats(stats);
-  $("win-overlay").hidden = false;
+  GameOverlay.show('win-overlay');
   launchConfetti();
 }
 function hideWin() {
-  $("win-overlay").hidden = true;
+  GameOverlay.hide('win-overlay');
 }
 
 function showHelpOverlay() {
-  $("help-overlay").hidden = false;
+  GameOverlay.show('help-overlay');
 }
 
 function hideHelpOverlay() {
-  $("help-overlay").hidden = true;
+  GameOverlay.hide('help-overlay');
 }
 
 // ============================================================

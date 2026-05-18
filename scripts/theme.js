@@ -22,6 +22,8 @@
     var wrapper = document.createElement('div')
     wrapper.className = 'custom-dropdown'
 
+    var listId = 'custom-dropdown-list-' + Math.random().toString(36).slice(2, 8)
+
     var trigger = document.createElement('button')
     trigger.type = 'button'
     trigger.className = 'custom-dropdown-trigger'
@@ -31,8 +33,6 @@
     trigger.textContent = select.options[select.selectedIndex]
       ? select.options[select.selectedIndex].text
       : ''
-
-    var listId = 'custom-dropdown-list-' + Math.random().toString(36).slice(2, 8)
     var list = document.createElement('div')
     list.id = listId
     list.className = 'custom-dropdown-list'

@@ -4,6 +4,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>小游戏合集</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" type="image/svg+xml" href="icon.svg" />
+  <meta name="theme-color" content="#5b6d8a" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <link rel="stylesheet" href="styles/common.css?v=1" />
 </head>
 <body>
@@ -85,6 +90,30 @@
       <div class="dash-stats" id="dash-tetris"></div>
       <span class="tag">街机</span>
     </a>
+    <a class="game-card" href="games/memory/index.html" data-game="memory">
+      <div class="name">记忆翻牌</div>
+      <div class="desc">翻牌配对经典游戏，找出所有相同图案的卡牌。支持三档难度，考验你的记忆力！</div>
+      <div class="dash-stats" id="dash-memory"></div>
+      <span class="tag">益智</span>
+    </a>
+    <a class="game-card" href="games/gomoku/index.html" data-game="gomoku">
+      <div class="name">五子棋</div>
+      <div class="desc">经典五子棋，15×15 棋盘，黑白双方轮流落子，先连成五子者获胜。支持双人对战和人机对战。</div>
+      <div class="dash-stats" id="dash-gomoku"></div>
+      <span class="tag">棋类</span>
+    </a>
+    <a class="game-card" href="games/othello/index.html" data-game="othello">
+      <div class="name">黑白棋</div>
+      <div class="desc">经典黑白棋，8×8 棋盘，夹住对方棋子即可翻转。支持双人对战和人机对战。</div>
+      <div class="dash-stats" id="dash-othello"></div>
+      <span class="tag">棋类</span>
+    </a>
+    <a class="game-card" href="games/match3/index.html" data-game="match3">
+      <div class="name">消消乐</div>
+      <div class="desc">经典三消游戏，交换相邻宝石形成三连消除。支持限时模式和步数模式。</div>
+      <div class="dash-stats" id="dash-match3"></div>
+      <span class="tag">益智</span>
+    </a>
   </main>
 
   <script src="scripts/theme.js"></script>
@@ -145,7 +174,7 @@
 
     // Spider
     try {
-      const raw = localStorage.getItem('spider_stats_v1');
+      const raw = localStorage.getItem('game_spider_stats_v1') || localStorage.getItem('spider_stats_v1');
       if (raw) {
         const data = JSON.parse(raw);
         let total = 0, won = 0;
@@ -159,21 +188,7 @@
 
     // Klondike
     try {
-      const raw = localStorage.getItem('klondike_stats_v1');
-      if (raw) {
-        const data = JSON.parse(raw);
-        let total = 0, won = 0;
-        for (const k of ['1','3']) {
-          if (data[k]) { total += data[k].started || 0; won += data[k].won || 0; }
-        }
-        let html = `<div class="dash-line"><span>总计 ${total} 局</span><span>胜率 ${fmtRate(won, total)}</span></div>`;
-        document.getElementById('dash-klondike').innerHTML = html;
-      }
-    } catch {}
-
-    // FreeCell
-    try {
-      const raw = localStorage.getItem('freecell_stats_v1');
+      const raw = localStorage.getItem('game_klondike_stats_v1') || localStorage.getItem('klondike_stats_v1');
       if (raw) {
         const data = JSON.parse(raw);
         const total = data.started || 0;
@@ -183,8 +198,20 @@
         const last = sessions[0];
         let html = `<div class="dash-line"><span>今日 ${today} 局</span><span>胜率 ${fmtRate(won, total)}</span></div>`;
         if (last) {
-          html += `<div class="dash-recent">最近：${fmtTimeMs(last.time)} ${last.won ? '胜利' : '失败'}</div>`;
+          html += `<div class="dash-recent">最近：${last.score || 0} 分 · ${fmtTimeMs(last.timeMs)} ${last.won ? '胜利' : '失败'}</div>`;
         }
+        document.getElementById('dash-klondike').innerHTML = html;
+      }
+    } catch {}
+
+    // FreeCell
+    try {
+      const raw = localStorage.getItem('game_freecell_stats_v1') || localStorage.getItem('freecell_stats_v1');
+      if (raw) {
+        const data = JSON.parse(raw);
+        const total = data.started || 0;
+        const won = data.won || 0;
+        let html = `<div class="dash-line"><span>胜率 ${fmtRate(won, total)}</span></div>`;
         document.getElementById('dash-freecell').innerHTML = html;
       }
     } catch {}
@@ -242,7 +269,86 @@
         document.getElementById('dash-tetris').innerHTML = html;
       }
     } catch {}
+
+    // Memory
+    try {
+      const raw = localStorage.getItem('game_memory_stats_v1');
+      if (raw) {
+        const data = JSON.parse(raw);
+        const total = data.started || 0;
+        const sessions = Array.isArray(data.sessions) ? data.sessions : [];
+        const won = sessions.filter(s => s.won).length;
+        const today = sessions.filter(s => s.completedAt >= todayStart).length;
+        const last = sessions[0];
+        let html = `<div class="dash-line"><span>今日 ${today} 局</span><span>胜率 ${fmtRate(won, total)}</span></div>`;
+        if (last) {
+          const diffName = { easy: '简单', medium: '中等', hard: '困难' }[last.difficulty] || last.difficulty;
+          html += `<div class="dash-recent">最近：${diffName} ${last.moves || 0} 步 · ${fmtTimeMs(last.timeMs)} ${last.won ? '胜利' : '失败'}</div>`;
+        }
+        document.getElementById('dash-memory').innerHTML = html;
+      }
+    } catch {}
+
+    // Gomoku
+    try {
+      const raw = localStorage.getItem('game_gomoku_stats_v1');
+      if (raw) {
+        const data = JSON.parse(raw);
+        const total = data.started || 0;
+        const sessions = Array.isArray(data.sessions) ? data.sessions : [];
+        const today = sessions.filter(s => s.completedAt >= todayStart).length;
+        const last = sessions[0];
+        let html = `<div class="dash-line"><span>今日 ${today} 局</span><span>总计 ${total} 局</span></div>`;
+        if (last) {
+          const result = last.winner === 1 ? '黑胜' : last.winner === 2 ? '白胜' : '和棋';
+          html += `<div class="dash-recent">最近：${last.mode === 'pvp' ? '双人' : '人机'} · ${result} · ${last.moves || 0} 步</div>`;
+        }
+        document.getElementById('dash-gomoku').innerHTML = html;
+      }
+    } catch {}
+
+    // Othello
+    try {
+      const raw = localStorage.getItem('game_othello_stats_v1');
+      if (raw) {
+        const data = JSON.parse(raw);
+        const total = data.started || 0;
+        const sessions = Array.isArray(data.sessions) ? data.sessions : [];
+        const today = sessions.filter(s => s.completedAt >= todayStart).length;
+        const last = sessions[0];
+        let html = `<div class="dash-line"><span>今日 ${today} 局</span><span>总计 ${total} 局</span></div>`;
+        if (last) {
+          const result = last.winner === 1 ? '黑胜' : last.winner === 2 ? '白胜' : '和棋';
+          html += `<div class="dash-recent">最近：${last.mode === 'pvp' ? '双人' : '人机'} · ${result} · ${last.moves || 0} 步</div>`;
+        }
+        document.getElementById('dash-othello').innerHTML = html;
+      }
+    } catch {}
+
+    // Match-3
+    try {
+      const raw = localStorage.getItem('game_match3_stats_v1');
+      if (raw) {
+        const data = JSON.parse(raw);
+        const total = data.started || 0;
+        const sessions = Array.isArray(data.sessions) ? data.sessions : [];
+        const won = sessions.filter(s => s.won).length;
+        const today = sessions.filter(s => s.completedAt >= todayStart).length;
+        const last = sessions[0];
+        let html = `<div class="dash-line"><span>今日 ${today} 局</span><span>胜率 ${fmtRate(won, total)}</span></div>`;
+        if (last) {
+          const modeName = last.mode === 'time' ? '限时' : '步数';
+          html += `<div class="dash-recent">最近：${modeName} · ${last.score || 0} 分 · 连锁 ${last.maxCombo || 0}</div>`;
+        }
+        document.getElementById('dash-match3').innerHTML = html;
+      }
+    } catch {}
   })();
   </script>
+<script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js').catch(function(){});
+}
+</script>
 </body>
 </html>
